@@ -11,11 +11,12 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include "Bullet.h"
+#include "Garlic.h"
 #include "MessageBoard.h"
-#include "Soldier.h"
-#include "Storeman.h"
-#include "Supplier.h"
+#include "GarlicShooter.h"
+#include "Medic.h"
+#include "Vampire.h"
+#include "Grocer.h"
 #include "MyObject.h"
 
 using namespace std;
@@ -182,60 +183,111 @@ void DoExit()
 	exit(EXIT_SUCCESS);
 }
 
-MyObject *soldier, *storeman, *supplier, *enemy, *bullet;
-CBullet Bullet;
-CSupplier Supplier;
-CStoreman Storeman;
-CSoldier Soldier;
+MyObject *shooter, *shooterbackup, *medic, *medicassistant, *grocer, *vampire, *garlic;
+CGarlic Garlics;
+CMedic Medic;
+CVampire Vampire;
+CGShooter Shooter;
+CGrocer Grocer;
 CMessageBoard mb;
 
 void SimulationInit()
 {
-	soldier = new MyObject();
-	soldier->SetRadius(0.25f);
-	soldier->SetColor(0.0f, 0.0f, 1.0f);
-	soldier->SetPosition(-2.5f, 0.0f);
-	soldier->SetName("Soldier");
-	soldier->SetState(CSoldier::ALIVE);
-	soldier->SetRole("Shooter");
+	// can use for loop, this is for testing only.
+	/*for (int a = 0; a < 3; a++)
+	{
+		shooter = new MyObject();
+		shooter->SetRadius(0.25f);
+		shooter->SetColor(0.0f, 0.0f, 1.0f);
+		shooter->SetPosition(-2.5f, 0.0f);
+		shooter->SetName("Garlic Shooter " + a + 1);
+		shooter->SetState(CGShooter::SHOOT);
+		shooter->SetRole("Garlic Shooter " + a + 1 );
+	}*/
 
-	enemy = new MyObject();
-	enemy->SetName("Enemy");
-	enemy->SetRadius(0.15f);
-	enemy->SetColor(1.0f, 0.0f, 0.0f);
-	enemy->SetPosition(5.0f, 0.0f);
+	shooter = new MyObject();
+	shooter->SetRadius(0.25f);
+	shooter->SetColor(0.0f, 0.0f, 1.0f);
+	shooter->SetPosition(-2.5f, 0.0f);
+	shooter->SetName("Garlic Shooter");
+	shooter->SetState(CGShooter::ALIVE);
+	shooter->SetHealth(3);
+	shooter->SetRole("Main");
 
-	bullet = new MyObject();
-	bullet->SetSpeed(0.1f);
-	bullet->SetName("Bullet");
-	bullet->SetState(CBullet::INACTIVE);
-	bullet->SetRadius(0.05f), bullet->SetColor(1.0f, 1.0f, 1.0f);
-	bullet->SetPosition(soldier->GetX() + soldier->GetRadius(), 0.0f);
-	Bullet.bulletGiven = 3;
-	Bullet.bulletLeft = Bullet.bulletGiven;
-	Bullet.bulletStartPos = soldier->GetX() + soldier->GetRadius();
+	shooterbackup = new MyObject();
+	shooterbackup->SetRadius(0.25f);
+	shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
+	shooterbackup->SetPosition(-1.5f, 0.0f);
+	shooterbackup->SetName("Garlic Refiller");
+	shooterbackup->SetState(CGShooter::IDLE);
+	shooterbackup->SetHealth(3);
+	shooterbackup->SetRole("Backup");
 
-	storeman = new MyObject();
-	storeman->SetName("Storeman");
-	storeman->SetSpeed(0.025f);
-	storeman->SetRadius(0.15f), storeman->SetPosition(-4.5f, 0.0f);
-	storeman->SetColor(0.0f, 1.0f, 0.0f);
-	storeman->SetState(CStoreman::STANDBY);
-	storeman->SetRole("Replenisher");
+	// vampires, use for loop also
+	vampire = new MyObject();
+	vampire->SetName("Vampires");
+	vampire->SetRadius(0.15f);
+	vampire->SetColor(1.0f, 0.0f, 0.0f);
+	vampire->SetPosition(5.0f, 0.0f);
+	vampire->SetHealth(3);
+	vampire->SetState(CVampire::MOVE);
 
-	supplier = new MyObject();
-	supplier->SetRadius(0.2f), supplier->SetPosition(-4.5f, 2.0f);
-	supplier->SetColor(1.0f, 1.0f, 0.0f);
-	supplier->SetSpeed(0.05f);
-	supplier->SetName("Supplier"); supplier->SetRole("Supplier");
-	supplier->SetState(CSupplier::STANDBY);
-	Supplier.supplierPos = 2.0;
+	// garlic for shooter 1, use for loop
+	/*for (int a = 0; a < 3; a++)
+	{
+		garlic = new MyObject();
+		garlic->SetSpeed(0.1f);
+		garlic->SetName("Bullet");
+		garlic->SetState(CGarlic::INACTIVE);
+		garlic->SetRadius(0.05f), garlic->SetColor(1.0f, 1.0f, 1.0f);
+		garlic->SetPosition(shooter->GetX() + shooter->GetRadius(), 0.0f);
+		Garlics.garlicGiven = 3;
+		Garlics.garlicLeft = Garlics.garlicGiven;
+		Garlics.garlicStartPos = shooter->GetX() + shooter->GetRadius();
+	}*/
 
-	Supplier.cycle = 1;
-	Storeman.storeRadius = 1.0f;
-	Storeman.storeLimit = 3;
-	Storeman.storeCount = Storeman.storeLimit;
-	Storeman.storePos = -4.5f;
+	garlic = new MyObject();
+	garlic->SetSpeed(0.1f);
+	garlic->SetName("Bullet");
+	garlic->SetState(CGarlic::INACTIVE);
+	garlic->SetRadius(0.05f), garlic->SetColor(1.0f, 1.0f, 1.0f);
+	garlic->SetPosition(shooter->GetX() + shooter->GetRadius(), 0.0f);
+	Garlics.garlicGiven = 3;
+	Garlics.garlicLeft = Garlics.garlicGiven;
+	Garlics.garlicStartPos = shooter->GetX() + shooter->GetRadius();
+
+	grocer = new MyObject();
+	grocer->SetName("Grocer");
+	grocer->SetSpeed(0.025f);
+	grocer->SetRadius(0.15f), grocer->SetPosition(-4.5f, 0.0f);
+	grocer->SetColor(0.0f, 1.0f, 0.0f);
+	grocer->SetState(CGrocer::IDLE);
+	grocer->SetRole("Supplier");
+	Grocer.grocerPos = 2.0;
+
+	medic = new MyObject();
+	medic->SetRadius(0.2f), medic->SetPosition(-4.5f, 2.0f);
+	medic->SetColor(1.0f, 1.0f, 0.0f);
+	medic->SetSpeed(0.05f);
+	medic->SetName("Medic"); 
+	medic->SetRole("Main Healer");
+	medic->SetState(CMedic::IDLE);
+	Medic.medicPos = 5.0;
+
+	medicassistant = new MyObject();
+	medicassistant->SetRadius(0.2f), medic->SetPosition(-4.5f, 2.0f);
+	medicassistant->SetColor(1.0f, 1.0f, 0.0f);
+	medicassistant->SetSpeed(0.05f);
+	medicassistant->SetName("Assistant Medic");
+	medicassistant->SetRole("Backup Healer");
+	medicassistant->SetState(CMedic::IDLE);
+	Medic.assistantPos = 5.0;
+
+	Grocer.cycle = 1;
+	Grocer.storeRadius = 1.0f;
+	Grocer.storeLimit = 3;
+	Grocer.storeCount = Grocer.storeLimit;
+	Grocer.storePos = -4.5f;
 }
 
 static void KeyCallBack(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -339,38 +391,57 @@ void RenderObjects() // OK
 	glPushMatrix();
 	glTranslatef(0.0f, 0.0f, -10.0f);
 
-	// Shooting
-	// Soldier Alive(Blue) or Killed (Gray)
-	if (soldier->GetState() == CSoldier::ALIVE)
-		RenderFillCircle(soldier->GetX(), soldier->GetY(),
-		soldier->GetRadius(), soldier->GetR(), soldier->GetG(),
-		soldier->GetB());
+	// Main Shooter
+	// Shooter Alive(Blue) or Killed (Gray)
+	if (shooter->GetState() == CGShooter::ALIVE)
+		RenderFillCircle(shooter->GetX(), shooter->GetY(),
+		shooter->GetRadius(), shooter->GetR(), shooter->GetG(),
+		shooter->GetB());
 	else
-		RenderFillCircle(soldier->GetX(), soldier->GetY(),
-		soldier->GetRadius(), 0.25f, 0.25f, 0.25f);
+		RenderFillCircle(shooter->GetX(), shooter->GetY(),
+		shooter->GetRadius(), 0.25f, 0.25f, 0.25f);
 
-	// Bullet
-	RenderFillCircle(bullet->GetX(), bullet->GetY(),
-		bullet->GetRadius(), bullet->GetR(), bullet->GetG(),
-		bullet->GetB());
+	// Shooter Backup
+	if (shooterbackup->GetState() == CGShooter::ALIVE)
+		RenderFillCircle(shooterbackup->GetX(), shooterbackup->GetY(),
+		shooterbackup->GetRadius(), shooterbackup->GetR(), shooterbackup->GetG(),
+		shooterbackup->GetB());
+	else
+		RenderFillCircle(shooterbackup->GetX(), shooterbackup->GetY(),
+		shooterbackup->GetRadius(), 0.25f, 0.25f, 0.25f);
 
-	// Enemy
-	RenderFillCircle(enemy->GetX(), enemy->GetY(), enemy->GetRadius(),
-		enemy->GetR(), enemy->GetG(), enemy->GetB());
+	// Garlic
+	RenderFillCircle(garlic->GetX(), garlic->GetY(),
+		garlic->GetRadius(), garlic->GetR(), garlic->GetG(),
+		garlic->GetB());
 
-	// Store
-	RenderFillCircle(Storeman.storePos, 0.0f, Storeman.storeRadius,
+	// Vampire
+	RenderFillCircle(vampire->GetX(), vampire->GetY(), vampire->GetRadius(),
+		vampire->GetR(), vampire->GetG(), vampire->GetB());
+
+	// Ammo Box
+	RenderFillCircle(Grocer.storePos, 0.0f, Grocer.storeRadius,
 		0.0f, 0.5f, 0.5f);
 
-	// Storeman
-	RenderFillCircle(storeman->GetX(), storeman->GetY(),
-		storeman->GetRadius(), storeman->GetR(), storeman->GetG(),
-		storeman->GetB());
+	// Grocer
+	RenderFillCircle(grocer->GetX(), grocer->GetY(),
+		grocer->GetRadius(), grocer->GetR(), grocer->GetG(),
+		grocer->GetB());
 
-	// Supplier
-	RenderFillCircle(supplier->GetX(), supplier->GetY(),
-		supplier->GetRadius(), supplier->GetR(), supplier->GetG(),
-		supplier->GetB());
+	// Medic
+	RenderFillCircle(medic->GetX(), medic->GetY(),
+		medic->GetRadius(), medic->GetR(), medic->GetG(),
+		medic->GetB());
+
+	// Medic Assistant
+	RenderFillCircle(medicassistant->GetX(), medicassistant->GetY(),
+		medicassistant->GetRadius(), medicassistant->GetR(), medicassistant->GetG(),
+		medicassistant->GetB());
+
+	// Safehouse
+	RenderFillCircle(Medic.safehousePos, 0.0f, Medic.safehouseRadius,
+		0.0f, 0.5f, 0.5f);
+
 
 	glPopMatrix();
 }
@@ -381,15 +452,15 @@ void RunFSM()
 	MyVector direction, sPos;
 
 	//Soldier
-	switch (soldier->GetState())
+	switch (shooter->GetState())
 	{
-	case CSoldier::ALIVE:
+	case CGShooter::ALIVE:
 		if (mb.GetMessage() == "Killed")
 		{
-			soldier->SetState(CSoldier::KILLED);
-			soldier->SetRole(" Killed ");
-			storeman->SetRole("Shooter");
-			storeman->SetState(CStoreman::REPLACING);
+			shooter->SetState(CGShooter::DIE);
+			shooter->SetRole(" Killed ");
+			shooterbackup->SetRole("Main Shooter");
+			shooter->SetState(CGShooter::REPLACE);
 		}
 		if (Bullet.bulletLeft == 0)
 		{
@@ -399,7 +470,7 @@ void RunFSM()
 		}
 		break;
 
-	case CSoldier::KILLED: if (storeman->GetState() == CStoreman::STANDBY)
+	case CGShooter::KILLED: if (storeman->GetState() == CStoreman::STANDBY)
 		storeman->SetState(CStoreman::REPLACING);
 		break;
 	}
@@ -424,11 +495,11 @@ void RunFSM()
 		}
 		break;
 
-	case CStoreman::REPLENISHING: direction = (storeman->GetPosition() - soldier->GetPosition()).Normalize();
-		distance = GetDistance(storeman->GetX(), storeman->GetY(), soldier->GetX(), soldier->GetY());
+	case CStoreman::REPLENISHING: direction = (storeman->GetPosition() - shooter->GetPosition()).Normalize();
+		distance = GetDistance(storeman->GetX(), storeman->GetY(), shooter->GetX(), shooter->GetY());
 		if (distance < storeman->GetSpeed())
 		{
-			storeman->SetPosition(soldier->GetPosition());
+			storeman->SetPosition(shooter->GetPosition());
 			storeman->SetState(CStoreman::REPLENISHED);
 			Bullet.bulletLeft = Bullet.bulletGiven;
 			bullet->SetState(CBullet::INACTIVE);
@@ -450,11 +521,11 @@ void RunFSM()
 			storeman->SetPosition(storeman->GetPosition() + direction * storeman->GetSpeed());
 		break;
 
-	case CStoreman::REPLACING: direction = (storeman->GetPosition() - soldier->GetPosition()).Normalize();
-		distance = GetDistance(storeman->GetX(), storeman->GetY(), soldier->GetX(), soldier->GetY());
+	case CStoreman::REPLACING: direction = (storeman->GetPosition() - shooter->GetPosition()).Normalize();
+		distance = GetDistance(storeman->GetX(), storeman->GetY(), shooter->GetX(), shooter->GetY());
 		if (distance < storeman->GetSpeed())
 		{
-			storeman->SetPosition(soldier->GetPosition());
+			storeman->SetPosition(shooter->GetPosition());
 			mb.Reset();
 			storeman->SetState(CStoreman::ACTING);
 			Bullet.bulletLeft += Bullet.bulletGiven;
@@ -516,7 +587,7 @@ void RunFSM()
 	case CBullet::INACTIVE:
 		if (Bullet.bulletLeft > 0)
 		{
-			if (soldier->GetState() != CSoldier::KILLED || storeman->GetState() == CStoreman::ACTING)
+			if (shooter->GetState() != CGShooter::KILLED || storeman->GetState() == CStoreman::ACTING)
 			{
 				bullet->SetState(CBullet::FIRED);
 				bullet->SetPosition(Bullet.bulletStartPos, 0.0f);
@@ -571,15 +642,15 @@ void Render(GLFWwindow* window) // OK
 
 		// Render text status
 		string stateString = "Soldier State : ";
-		switch (soldier->GetState())
+		switch (shooter->GetState())
 		{
-		case CSoldier::ALIVE: stateString += "ALIVE";
+		case CGShooter::ALIVE: stateString += "ALIVE";
 			break;
-		case CSoldier::KILLED: stateString += "KILLED";
+		case CGShooter::KILLED: stateString += "KILLED";
 			break;
 		}
 		RenderText(stateString, face, -0.95f, 0.925f, 0.5f, 0.5f);
-		stateString = "Soldier Role : " + soldier->GetRole();
+		stateString = "Soldier Role : " + shooter->GetRole();
 		RenderText(stateString, face, -0.95f, 0.825f, 0.5f, 0.5f);
 		stateString = "Storeman State : ";
 		switch (storeman->GetState())

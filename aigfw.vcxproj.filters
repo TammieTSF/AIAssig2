@@ -18,20 +18,11 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MyObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Soldier.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Storeman.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Supplier.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MessageBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -39,6 +30,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MyVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Garlic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GarlicShooter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Medic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Grocer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vampire.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
