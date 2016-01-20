@@ -10,6 +10,20 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Garlic.h" />
+    <ClInclude Include="Source\GarlicShooter.h" />
+    <ClInclude Include="Source\Grocer.h" />
+    <ClInclude Include="Source\Medic.h" />
+    <ClInclude Include="Source\MessageBoard.h" />
+    <ClInclude Include="Source\MyObject.h" />
+    <ClInclude Include="Source\MyVector.h" />
+    <ClInclude Include="Source\Vampire.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\MyObject.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B38A4264-8F54-4741-905B-6C94F9F1DBC7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -83,20 +97,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MyObject.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Garlic.h" />
-    <ClInclude Include="MessageBoard.h" />
-    <ClInclude Include="MyObject.h" />
-    <ClInclude Include="MyVector.h" />
-    <ClInclude Include="GarlicShooter.h" />
-    <ClInclude Include="Medic.h" />
-    <ClInclude Include="Grocer.h" />
-    <ClInclude Include="Vampire.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

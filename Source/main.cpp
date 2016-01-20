@@ -196,13 +196,13 @@ void SimulationInit()
 	// can use for loop, this is for testing only.
 	/*for (int a = 0; a < 3; a++)
 	{
-		shooter = new MyObject();
-		shooter->SetRadius(0.25f);
-		shooter->SetColor(0.0f, 0.0f, 1.0f);
-		shooter->SetPosition(-2.5f, 0.0f);
-		shooter->SetName("Garlic Shooter " + a + 1);
-		shooter->SetState(CGShooter::SHOOT);
-		shooter->SetRole("Garlic Shooter " + a + 1 );
+	shooter = new MyObject();
+	shooter->SetRadius(0.25f);
+	shooter->SetColor(0.0f, 0.0f, 1.0f);
+	shooter->SetPosition(-2.5f, 0.0f);
+	shooter->SetName("Garlic Shooter " + a + 1);
+	shooter->SetState(CGShooter::SHOOT);
+	shooter->SetRole("Garlic Shooter " + a + 1 );
 	}*/
 
 	shooter = new MyObject();
@@ -235,15 +235,15 @@ void SimulationInit()
 	// garlic for shooter 1, use for loop
 	/*for (int a = 0; a < 3; a++)
 	{
-		garlic = new MyObject();
-		garlic->SetSpeed(0.1f);
-		garlic->SetName("Bullet");
-		garlic->SetState(CGarlic::INACTIVE);
-		garlic->SetRadius(0.05f), garlic->SetColor(1.0f, 1.0f, 1.0f);
-		garlic->SetPosition(shooter->GetX() + shooter->GetRadius(), 0.0f);
-		Garlics.garlicGiven = 3;
-		Garlics.garlicLeft = Garlics.garlicGiven;
-		Garlics.garlicStartPos = shooter->GetX() + shooter->GetRadius();
+	garlic = new MyObject();
+	garlic->SetSpeed(0.1f);
+	garlic->SetName("Bullet");
+	garlic->SetState(CGarlic::INACTIVE);
+	garlic->SetRadius(0.05f), garlic->SetColor(1.0f, 1.0f, 1.0f);
+	garlic->SetPosition(shooter->GetX() + shooter->GetRadius(), 0.0f);
+	Garlics.garlicGiven = 3;
+	Garlics.garlicLeft = Garlics.garlicGiven;
+	Garlics.garlicStartPos = shooter->GetX() + shooter->GetRadius();
 	}*/
 
 	garlic = new MyObject();
@@ -269,7 +269,7 @@ void SimulationInit()
 	medic->SetRadius(0.2f), medic->SetPosition(-4.5f, 2.0f);
 	medic->SetColor(1.0f, 1.0f, 0.0f);
 	medic->SetSpeed(0.05f);
-	medic->SetName("Medic"); 
+	medic->SetName("Medic");
 	medic->SetRole("Main Healer");
 	medic->SetState(CMedic::IDLE);
 	Medic.medicPos = 5.0;
@@ -462,77 +462,77 @@ void RunFSM()
 			shooterbackup->SetRole("Main Shooter");
 			shooter->SetState(CGShooter::REPLACE);
 		}
-		if (Bullet.bulletLeft == 0)
+		if (Garlics.garlicLeft == 0)
 		{
 			mb.SetMessage("Ammo needed");
-			mb.SetFromLabel("Soldier");
-			mb.SetToLabel("Storeman");
+			mb.SetFromLabel("Shooter");
+			mb.SetToLabel("Refiller");
 		}
 		break;
 
-	case CGShooter::KILLED: if (storeman->GetState() == CStoreman::STANDBY)
-		storeman->SetState(CStoreman::REPLACING);
+	case CGShooter::DIE: if (shooterbackup->GetState() == CGShooter::IDLE)
+		shooterbackup->SetState(CGShooter::REPLACE);
 		break;
 	}
 
 	//Storeman
-	switch (storeman->GetState())
+	switch (shooterbackup->GetState())
 	{
-	case CStoreman::STANDBY:
+	case CGShooter::IDLE:
 		if (mb.GetMessage() == "Ammo needed")
 		{
-			storeman->SetState(CStoreman::REPLENISHING);
-			Storeman.storeCount = 0;
+			shooterbackup->SetState(CGShooter::REFILL);
+			Grocer.storeCount = 0;
 		}
 		else
 		{
-			if (Storeman.storeCount == 0)
+			if (Grocer.storeCount == 0)
 			{
-				mb.SetMessage("Need restock");
-				mb.SetFromLabel("Storeman");
-				mb.SetToLabel("Supplier");
+				mb.SetMessage("Need more garlics");
+				mb.SetFromLabel("Refiller");
+				mb.SetToLabel("Grocer");
 			}
 		}
 		break;
 
-	case CStoreman::REPLENISHING: direction = (storeman->GetPosition() - shooter->GetPosition()).Normalize();
-		distance = GetDistance(storeman->GetX(), storeman->GetY(), shooter->GetX(), shooter->GetY());
-		if (distance < storeman->GetSpeed())
+	case CStoreman::REPLENISHING: direction = (shooterbackup->GetPosition() - shooter->GetPosition()).Normalize();
+		distance = GetDistance(shooterbackup->GetX(), shooterbackup->GetY(), shooter->GetX(), shooter->GetY());
+		if (distance < shooterbackup->GetSpeed())
 		{
-			storeman->SetPosition(shooter->GetPosition());
-			storeman->SetState(CStoreman::REPLENISHED);
+			shooterbackup->SetPosition(shooter->GetPosition());
+			shooterbackup->SetState(CStoreman::REPLENISHED);
 			Bullet.bulletLeft = Bullet.bulletGiven;
 			bullet->SetState(CBullet::INACTIVE);
 		}
 		else
-			storeman->SetPosition(storeman->GetPosition() + direction * storeman->GetSpeed());
+			shooterbackup->SetPosition(shooterbackup->GetPosition() + direction * shooterbackup->GetSpeed());
 		break;
 
 	case CStoreman::REPLENISHED: mb.Reset();
 		sPos = MyVector(Storeman.storePos, 0.0f);
-		direction = (storeman->GetPosition() - sPos).Normalize();
-		distance = GetDistance(sPos.GetX(), sPos.GetY(), storeman->GetX(), storeman->GetY());
-		if (distance < storeman->GetSpeed())
+		direction = (shooterbackup->GetPosition() - sPos).Normalize();
+		distance = GetDistance(sPos.GetX(), sPos.GetY(), shooterbackup->GetX(), shooterbackup->GetY());
+		if (distance < shooterbackup->GetSpeed())
 		{
-			storeman->SetPosition(sPos);
-			storeman->SetState(CStoreman::STANDBY);
+			shooterbackup->SetPosition(sPos);
+			shooterbackup->SetState(CStoreman::STANDBY);
 		}
 		else
-			storeman->SetPosition(storeman->GetPosition() + direction * storeman->GetSpeed());
+			shooterbackup->SetPosition(shooterbackup->GetPosition() + direction * shooterbackup->GetSpeed());
 		break;
 
-	case CStoreman::REPLACING: direction = (storeman->GetPosition() - shooter->GetPosition()).Normalize();
-		distance = GetDistance(storeman->GetX(), storeman->GetY(), shooter->GetX(), shooter->GetY());
-		if (distance < storeman->GetSpeed())
+	case CStoreman::REPLACING: direction = (shooterbackup->GetPosition() - shooter->GetPosition()).Normalize();
+		distance = GetDistance(shooterbackup->GetX(), shooterbackup->GetY(), shooter->GetX(), shooter->GetY());
+		if (distance < shooterbackup->GetSpeed())
 		{
-			storeman->SetPosition(shooter->GetPosition());
+			shooterbackup->SetPosition(shooter->GetPosition());
 			mb.Reset();
-			storeman->SetState(CStoreman::ACTING);
+			shooterbackup->SetState(CStoreman::ACTING);
 			Bullet.bulletLeft += Bullet.bulletGiven;
 			bullet->SetState(CBullet::INACTIVE);
 		}
 		else
-			storeman->SetPosition(storeman->GetPosition() + direction * storeman->GetSpeed());
+			shooterbackup->SetPosition(shooterbackup->GetPosition() + direction * shooterbackup->GetSpeed());
 		break;
 
 	case CStoreman::ACTING: break;
@@ -544,14 +544,14 @@ void RunFSM()
 	case CSupplier::STANDBY: if (mb.GetMessage() == "Need restock")
 		supplier->SetState(CSupplier::DELIVERING);
 		break;
-	case CSupplier::DELIVERING: if (storeman->GetState() == CSupplier::STANDBY)
+	case CSupplier::DELIVERING: if (shooterbackup->GetState() == CSupplier::STANDBY)
 	{
-		direction = (supplier->GetPosition() - storeman->GetPosition()).Normalize();
-		distance = GetDistance(storeman->GetX(), storeman->GetY(), supplier->GetX(), supplier->GetY());
+		direction = (supplier->GetPosition() - shooterbackup->GetPosition()).Normalize();
+		distance = GetDistance(shooterbackup->GetX(), shooterbackup->GetY(), supplier->GetX(), supplier->GetY());
 		if (distance < supplier->GetSpeed())
 		{
-			supplier->SetPosition(storeman->GetPosition());
-			storeman->SetState(CStoreman::STANDBY);
+			supplier->SetPosition(shooterbackup->GetPosition());
+			shooterbackup->SetState(CStoreman::STANDBY);
 			Storeman.storeCount = Storeman.storeLimit;
 			supplier->SetState(CSupplier::DELIVERED);
 			if (Supplier.cycle < Supplier.cycleLimit)
@@ -587,7 +587,7 @@ void RunFSM()
 	case CBullet::INACTIVE:
 		if (Bullet.bulletLeft > 0)
 		{
-			if (shooter->GetState() != CGShooter::KILLED || storeman->GetState() == CStoreman::ACTING)
+			if (shooter->GetState() != CGShooter::KILLED || shooterbackup->GetState() == CStoreman::ACTING)
 			{
 				bullet->SetState(CBullet::FIRED);
 				bullet->SetPosition(Bullet.bulletStartPos, 0.0f);
@@ -653,7 +653,7 @@ void Render(GLFWwindow* window) // OK
 		stateString = "Soldier Role : " + shooter->GetRole();
 		RenderText(stateString, face, -0.95f, 0.825f, 0.5f, 0.5f);
 		stateString = "Storeman State : ";
-		switch (storeman->GetState())
+		switch (shooterbackup->GetState())
 		{
 		case CStoreman::STANDBY: stateString += "STANDBY";
 			break;
@@ -667,7 +667,7 @@ void Render(GLFWwindow* window) // OK
 			break;
 		}
 		RenderText(stateString, face, -0.4f, 0.925f, 0.5f, 0.5f);
-		stateString = "Storeman Role : " + storeman->GetRole();
+		stateString = "Storeman Role : " + shooterbackup->GetRole();
 		RenderText(stateString, face, -0.4f, 0.825f, 0.5f, 0.5f);
 
 		stateString = "Supplier State : ";
