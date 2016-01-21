@@ -9,10 +9,6 @@ public:
 		RETREAT,
 		RETURN,
 		DIE,
-		IDLE, // BACKUP
-		REFILL, // BACKUP
-		REPLACE, // BACKUP
-		RETURNB, // BACKUP
 
 		HEALING,
 		HEALED,
