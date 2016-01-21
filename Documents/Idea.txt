@@ -1,0 +1,35 @@
+Medic
+2 Medic, One main(Pink), One Assistant(Green)
+If there is the assistant, healing time is lesser.
+Else, healing time is doubled.
+
+
+G.Shooter
+3 Shooters
+Garlics: 20
+Health: 2 per Shooter
+
+G.Backup
+Supplies Garlics to each shooter.
+If one shooter is injured, goes to replace that shooter,
+
+Grocer
+Refills 100 garlics into Garlic Box.
+
+Vampire
+Health - 5 
+
+Message Board
+To 			From
+Medic.A			Medic.M(Assistant)
+Medic.M(Assistant)	Medic.A
+G.Backup		G.Shooter(Backup)
+G.Shooter		Patient
+Patient			G.Shooter
+G.Shooter(Backup)	G.Backup
+
+Message
+G.Shooter - "I'm Retreating, Need Medic!" - Run back to safehouse
+G.Backup - "I'm coming over!" - Run to previous Shooter position
+G.Backup - "I need ammo over here!" - Supplier runs to restock
+
