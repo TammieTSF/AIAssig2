@@ -1,5 +1,5 @@
 #include <string>
-#include "MyVector.h"
+#include "Vector3.h"
 
 using namespace std;
 
@@ -8,7 +8,7 @@ class MyObject
 public:
 	string name, role;
 	float speed, radius;
-	MyVector position;
+	Vector3 position;
 	int state, health;
 	float r, g, b;
 
@@ -22,14 +22,14 @@ public:
 	void SetSpeed(float _speed);
 	void SetRadius(float _radius);
 	void SetPosition(float x, float y);
-	void SetPosition(MyVector _position);
+	void SetPosition(Vector3 _position);
 
 	string GetName();
 	string GetRole();
 	int GetState();
 	float GetSpeed();
 	float GetRadius();
-	MyVector GetPosition();
+	Vector3 GetPosition();
 	float GetX();
 	float GetY();
 	float GetR();

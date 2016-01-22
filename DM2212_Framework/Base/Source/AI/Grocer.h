@@ -12,7 +12,7 @@ public:
 		SUPPLIED,
 	};
 
-	float grocerPos, storeRadius, storePos;
+	float storeRadius, storePos;
 	int storeCount, storeLimit;
 	const int cycleLimit = 2;
 	int cycle;

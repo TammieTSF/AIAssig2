@@ -53,10 +53,10 @@ void MyObject::SetRadius(float _radius)
 
 void MyObject::SetPosition(float x, float y)
 {
-	position = MyVector(x, y);
+	position = Vector3(x, y);
 }
 
-void MyObject::SetPosition(MyVector _position)
+void MyObject::SetPosition(Vector3 _position)
 {
 	position = _position;
 }
@@ -85,7 +85,7 @@ float MyObject::GetRadius()
 	return radius;
 }
 
-MyVector MyObject::GetPosition()
+Vector3 MyObject::GetPosition()
 {
 	return position;
 }

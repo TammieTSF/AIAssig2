@@ -13,10 +13,17 @@
 #include <GL/glew.h>
 #include <GLFw/glfw3.h>
 #include "SceneBase.h"
+#include "AI\AssistantMedic.h"
+#include "AI\Garlic.h"
+#include "AI\GarlicBackup.h"
+#include "AI\GarlicShooter.h"
+#include "AI\Grocer.h"
 #include "AI\Medic.h"
+#include "AI\Vampire.h"
+#include "MyObject.h"
+#include "MessageBoard.h"
 
-
-using std::string;
+using namespace std;
 
 
 class SceneAI : public SceneBase
@@ -36,9 +43,33 @@ public:
 //	Customer* FetchCustomers();
 //	Supplier* FetchSupplier();
 
+	MyObject *garlic, 
+		*grocer, 
+		*medic, 
+		*medicassistant, 
+		*shooter,
+		*shooterbackup, 
+		*vampire;
+	
+	CAssistant aMedic;	// Medic Assistant
+	CGarlic Garlics;	// Garlic Bullets
+	CGBackup bShooter;	// Garlic Backup
+	CGShooter Shooter;	// Main Shooter
+	CGrocer Grocer;		// Grocer	
+	CMedic Medic;		// Main Assistant
+	CMessageBoard mb;	// MessageBoard
+	CVampire Vampire;	// Vampire
+	
+	
+	
+
+
 	//Randomizer
 	int RandomInteger(int lowerLimit, int upperLimit);
-	std::string itos(const long value);
+	string itos(const long value);
+
+	bool Detect(Vector3 pos1, Vector3 pos2, float radius1, float radius2);
+	float GetDistance(float x1, float y1, float x2, float y2);
 
 protected:
 

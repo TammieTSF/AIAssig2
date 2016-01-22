@@ -1,8 +1,8 @@
 #pragma once
-class CGBACKUP
+class CGBackup
 {
 public:
-	enum SHOOTER
+	enum BACKUP
 	{
 		ALIVE,
 		SHOOT,
@@ -19,5 +19,8 @@ public:
 		RETURNING,
 		RETURNED,
 	};
+
+	float AmmoPos, AmmoRadius;
+	int AmmoCount, AmmoLimit;
 };
 

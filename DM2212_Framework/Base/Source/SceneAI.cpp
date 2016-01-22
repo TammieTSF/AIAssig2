@@ -17,11 +17,25 @@ int SceneAI::RandomInteger(int lowerLimit, int upperLimit)
 }
 
 // long integer to string
-std::string SceneAI::itos(const long value)
+string SceneAI::itos(const long value)
 {
 	std::ostringstream buffer;
 	buffer << value;
 	return buffer.str();
+}
+
+float SceneAI::GetDistance(float x1, float y1, float x2, float y2)
+{
+	return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+}
+
+bool SceneAI::Detect(Vector3 pos1, Vector3 pos2, float radius1, float radius2)
+{
+	bool detect = false;
+	float totalRadius = radius1 + radius2;
+	float distance = GetDistance(pos1.x, pos1.y, pos2.x, pos2.y);
+	if (distance <= totalRadius) detect = true;
+	return detect;
 }
 
 void SceneAI::Init()

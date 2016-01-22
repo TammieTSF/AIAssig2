@@ -1,8 +1,8 @@
 #pragma once
-class CMedic
+class CAssistant
 {
 public:
-	enum MEDIC
+	enum ASSISTANT
 	{
 		IDLE,
 		HELP, // FOR ASSISTANT, HELP THE MAIN MEDIC
