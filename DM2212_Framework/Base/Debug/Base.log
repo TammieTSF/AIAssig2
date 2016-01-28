@@ -1,4 +1,4 @@
-﻿Build started 1/22/2016 4:39:35 PM.
+﻿Build started 1/28/2016 10:01:44 AM.
      1>Project "C:\Users\Tammie\Desktop\AIAssig2\DM2212_Framework\Base\Base.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\Tammie\Desktop\AIAssig2\DM2212_Framework\/Common/Source /IC:\Users\Tammie\Desktop\AIAssig2\DM2212_Framework\/glew/include /IC:\Users\Tammie\Desktop\AIAssig2\DM2212_Framework\/glfw/include /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\Application.cpp
@@ -24,4 +24,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.78
+Time Elapsed 00:00:01.56

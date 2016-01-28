@@ -15,5 +15,9 @@ public:
 		RETURNING,
 		RETURNED,
 	};
+
+	bool Lane1Empty;
+	bool Lane2Empty;
+	bool Lane3Empty;
 };
 

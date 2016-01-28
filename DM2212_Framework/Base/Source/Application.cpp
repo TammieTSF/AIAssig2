@@ -90,12 +90,12 @@ void Application::Init()
 
 	const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 	//Create a window and create its OpenGL context
-	m_width = 1000;
+	m_width = 1500;
 	m_height = 700;
 	// this is for fullscreen
 	//m_window = glfwCreateWindow(mode->width, mode->height, "Physics Assignment", glfwGetPrimaryMonitor(), NULL);
 	// this is for adjusting screen size, use this when you don't want it to be in full screen
-	m_window = glfwCreateWindow(m_height, m_height, "Physics", NULL, NULL);
+	m_window = glfwCreateWindow(m_width, m_height, "Physics", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)

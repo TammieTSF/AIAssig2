@@ -11,13 +11,17 @@ Health: 2 per Shooter
 
 G.Backup
 Supplies Garlics to each shooter.
-If one shooter is injured, goes to replace that shooter,
+If one shooter is injured, goes to replace that shooter.
 
 Grocer
 Refills 100 garlics into Garlic Box.
 
 Vampire
 Health - 5 
+if they reach a certain distance, spawn 3 more vampires.
+
+Entire safehouse has an overall HP of 10
+They can take up to a total of 10 hits from the vampires
 
 Message Board
 To 			From

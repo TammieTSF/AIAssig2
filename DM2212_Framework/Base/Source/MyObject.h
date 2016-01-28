@@ -35,4 +35,6 @@ public:
 	float GetR();
 	float GetG();
 	float GetB();
+
+	int MinusHealth();
 };

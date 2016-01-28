@@ -114,3 +114,9 @@ float MyObject::GetB()
 {
 	return b;
 }
+
+int MyObject::MinusHealth()
+{
+	health -= 1;
+	return health;
+}

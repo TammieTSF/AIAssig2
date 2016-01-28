@@ -56,13 +56,9 @@ public:
 	CGBackup bShooter;	// Garlic Backup
 	CGShooter Shooter;	// Main Shooter
 	CGrocer Grocer;		// Grocer	
-	CMedic Medic;		// Main Assistant
+	CMedic Medic;		// Main Medic
 	CMessageBoard mb;	// MessageBoard
 	CVampire Vampire;	// Vampire
-	
-	
-	
-
 
 	//Randomizer
 	int RandomInteger(int lowerLimit, int upperLimit);
