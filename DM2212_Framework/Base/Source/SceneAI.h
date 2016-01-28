@@ -20,11 +20,9 @@
 #include "AI\Grocer.h"
 #include "AI\Medic.h"
 #include "AI\Vampire.h"
-#include "MyObject.h"
 #include "MessageBoard.h"
 
 using namespace std;
-
 
 class SceneAI : public SceneBase
 {
@@ -40,17 +38,10 @@ public:
 	void RenderGO(GameObject *go);
 
 	GameObject* FetchGO();
-//	Customer* FetchCustomers();
-//	Supplier* FetchSupplier();
 
-	MyObject *garlic, 
-		*grocer, 
-		*medic, 
-		*medicassistant, 
-		*shooter,
-		*shooterbackup, 
-		*vampire;
-	
+	CGBackup* FectchShooters();
+	CVampire* FetchVampires();
+
 	CAssistant aMedic;	// Medic Assistant
 	CGarlic Garlics;	// Garlic Bullets
 	CGBackup bShooter;	// Garlic Backup
@@ -80,7 +71,16 @@ protected:
 	//string customerState;
 
 	//GameObject *m_cashier;
+	//GameObject *m_shooter;
 
+	GameObject
+		*garlic,
+		*grocer,
+		*medic,
+		*medicassistant,
+		*shooter,
+		*shooterbackup,
+		*vampire;
 
 	Vector3 m_force;
 

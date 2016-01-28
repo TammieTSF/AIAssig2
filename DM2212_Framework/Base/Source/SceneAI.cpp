@@ -59,34 +59,36 @@ void SceneAI::Init()
 	m_worldHeight = 100.f;
 	m_worldWidth = m_worldHeight * (float)Application::GetWindowWidth() / Application::GetWindowHeight();
 
-	for (int a = 1; a <= 3; a++)
-	{
-		shooter = new MyObject();
-		shooter->SetRadius(0.25f);
-		shooter->SetColor(0.0f, 0.0f, 0.0f + a % 20);
-		shooter->SetPosition(-2.5f, 0.0f + a * 10.f);
-		shooter->SetName("Garlic Shooter");
-		shooter->SetState(CGShooter::ALIVE);
-		shooter->SetHealth(2);
-		shooter->SetRole("Main");
-	}
-	
-	shooterbackup = new MyObject();
-	shooterbackup->SetRadius(0.25f);
-	shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
-	shooterbackup->SetPosition(-1.5f, 0.0f);
-	shooterbackup->SetName("Garlic Refiller");
-	shooterbackup->SetState(CGBackup::ALIVE);
-	shooterbackup->SetHealth(2);
-	shooterbackup->SetRole("Backup");
+	//for (int a = 1; a <= 3; a++)
+	//{
+	//	shooter = new MyObject();
+	//	shooter->SetRadius(0.25f);
+	//	shooter->SetColor(0.0f, 0.0f, 0.0f + a % 20);
+	//	shooter->SetPosition(-2.5f, 0.0f + a * 10.f);
+	//	shooter->SetName("Garlic Shooter");
+	//	shooter->SetState(CGShooter::ALIVE);
+	//	shooter->SetHealth(2);
+	//	shooter->SetRole("Main");
+	//}
+	//
+	//shooterbackup = new MyObject();
+	//shooterbackup->SetRadius(0.25f);
+	//shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
+	//shooterbackup->SetPosition(-1.5f, 0.0f);
+	//shooterbackup->SetName("Garlic Refiller");
+	//shooterbackup->SetState(CGBackup::ALIVE);
+	//shooterbackup->SetHealth(2);
+	//shooterbackup->SetRole("Backup");
 
-	vampire = new MyObject();
-	vampire->SetName("Vampires");
-	vampire->SetRadius(0.15f);
-	vampire->SetColor(1.0f, 0.0f, 0.0f);
-	vampire->SetPosition(5.0f, 0.0f);
-	vampire->SetHealth(3);
-	vampire->SetRole("Backup");
+	//vampire = new MyObject();
+	//vampire->SetName("Vampires");
+	//vampire->SetRadius(0.15f);
+	//vampire->SetColor(1.0f, 0.0f, 0.0f);
+	//vampire->SetPosition(5.0f, 0.0f);
+	//vampire->SetHealth(3);
+	//vampire->SetRole("Backup");
+
+	//m_shooter
 
 
 	//Construct Shooter
