@@ -87,7 +87,8 @@ protected:
 	int m_objectCount;
 	int objectcount;
 
-	
+	//for random vampire spawn
+
 	//Probability
 	//float Gprobability; // Gender probability
 };

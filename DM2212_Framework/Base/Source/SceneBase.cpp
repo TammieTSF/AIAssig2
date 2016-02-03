@@ -113,6 +113,20 @@ void SceneBase::Init()
 	meshList[GEO_BG] = MeshBuilder::GenerateQuad("background", Color(1,1,1), 1.f);
 	meshList[GEO_BG]->textureID = LoadTGA("Image//background.tga");
 
+
+	//lines (left to right)
+
+	//1st line
+	meshList[GEO_FIRSTLINE] = MeshBuilder::GenerateQuad("first line", Color(1, 1, 1), 1.f);
+	//2nd line
+	meshList[GEO_SECONDLINE] = MeshBuilder::GenerateQuad("second line", Color(1, 1, 1), 1.f);
+	//lane top
+	meshList[GEO_LANETOP] = MeshBuilder::GenerateQuad("lane top", Color(1, 0.5019607843137255, 0), 1.f);
+	//lane mid
+	meshList[GEO_LANEMID] = MeshBuilder::GenerateQuad("lane mid", Color(1, 0.5019607843137255, 0), 1.f);
+	//lane bot
+	meshList[GEO_LANEBOT] = MeshBuilder::GenerateQuad("lane bot", Color(1, 0.5019607843137255, 0), 1.f);
+
 	bLightEnabled = false;
 }
 

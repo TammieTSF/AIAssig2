@@ -38,6 +38,7 @@ bool SceneAI::Detect(Vector3 pos1, Vector3 pos2, float radius1, float radius2)
 	return detect;
 }
 
+
 void SceneAI::Init()
 {
 	SceneBase::Init();
@@ -70,7 +71,7 @@ void SceneAI::Init()
 	//	shooter->SetHealth(2);
 	//	shooter->SetRole("Main");
 	//}
-	//
+
 	//shooterbackup = new MyObject();
 	//shooterbackup->SetRadius(0.25f);
 	//shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
@@ -80,7 +81,8 @@ void SceneAI::Init()
 	//shooterbackup->SetHealth(2);
 	//shooterbackup->SetRole("Backup");
 
-	//vampire = new MyObject();
+	vampire = new GameObject();
+
 	//vampire->SetName("Vampires");
 	//vampire->SetRadius(0.15f);
 	//vampire->SetColor(1.0f, 0.0f, 0.0f);
@@ -229,8 +231,41 @@ void SceneAI::Render()
 	modelStack.Scale(m_worldWidth, m_worldHeight, 1);
 	//RenderMesh(meshList[GEO_BG], false);
 	modelStack.PopMatrix();
-
 	
+	//RENDER THE FIRST LINE
+	modelStack.PushMatrix();
+	modelStack.Translate(m_worldWidth * 0.35f, m_worldHeight * 0.3f, -5);
+	modelStack.Scale(1, m_worldHeight, 1);
+	RenderMesh(meshList[GEO_FIRSTLINE], false);
+	modelStack.PopMatrix();
+
+	//RENDER THE SECOND LINE
+	modelStack.PushMatrix();
+	modelStack.Translate(m_worldWidth * 0.8f, m_worldHeight * 0.3f, -5);
+	modelStack.Scale(1, m_worldHeight, 1);
+	RenderMesh(meshList[GEO_SECONDLINE], false);
+	modelStack.PopMatrix();
+
+	//RENDER THE LANE TOP
+	modelStack.PushMatrix();
+	modelStack.Translate(m_worldWidth * 0.85f, m_worldHeight * 0.8f, -5);
+	modelStack.Scale(m_worldWidth, 1, 1);
+	RenderMesh(meshList[GEO_LANETOP], false);
+	modelStack.PopMatrix();
+
+	//RENDER THE LANE MID
+	modelStack.PushMatrix();
+	modelStack.Translate(m_worldWidth * 0.85f, m_worldHeight * 0.5f, -5);
+	modelStack.Scale(m_worldWidth, 1, 1);
+	RenderMesh(meshList[GEO_LANEMID], false);
+	modelStack.PopMatrix();
+
+	//RENDER THE LANE MID
+	modelStack.PushMatrix();
+	modelStack.Translate(m_worldWidth * 0.85f, m_worldHeight * 0.2f, -5);
+	modelStack.Scale(m_worldWidth, 1, 1);
+	RenderMesh(meshList[GEO_LANEBOT], false);
+	modelStack.PopMatrix();
 
 	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
 	{
@@ -252,8 +287,8 @@ void SceneAI::Render()
 	//FPS
 	std::ostringstream T_fps;
 	T_fps.precision(5);
-	T_fps << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], T_fps.str(), Color(1, 1, 1), 2, m_worldWidth * .44f, m_worldHeight * 0.57f);
+	T_fps << "message board: " << fps; //<----- change to message board
+	RenderTextOnScreen(meshList[GEO_TEXT], T_fps.str(), Color(1, 1, 1), 2, m_worldWidth * .15f, m_worldHeight * 0.57f);
 
 
 }
