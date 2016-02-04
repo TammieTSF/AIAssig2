@@ -1,19 +1,16 @@
 #pragma once
-class CGShooter
+#include "../GameObject.h"
+
+class CGShooter : public GameObject
 {
 public:
 	enum SHOOTER
 	{
 		ALIVE,
 		SHOOT,
-		RETREAT,
 		RETURN,
-		DIE,
-
-		HEALING,
-		HEALED,
-		RETURNING,
-		RETURNED,
+		INJURED,
+		DIED,
 	};
 
 	bool Lane1Empty;

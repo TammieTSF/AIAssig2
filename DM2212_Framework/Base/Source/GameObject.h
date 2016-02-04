@@ -14,13 +14,13 @@ struct GameObject
 		GO_BALL,
 		GO_CUBE,
 
-		GO_SHOOTER,
-		GO_BSHOOTER,
-		GO_MMEDIC,
-		GO_AMEDIC,
-		GO_VAMPIRE,
-		GO_BULLET,
-		GO_SUPPLIER,
+		GO_SHOOTER,		// Garlic Shooter
+		GO_BSHOOTER,	// Backup Shooter
+		GO_MMEDIC,		// Main Medic
+		GO_AMEDIC,		// Assistant Medic
+		GO_VAMPIRE,		// Vampire
+		GO_BULLET,		// Bullet
+		GO_SUPPLIER,	// Supplier
 
 		GO_TOTAL, //must be last
 	};
@@ -32,7 +32,6 @@ public:
 
 	string name, role;
 
-	float speed, radius;
 	float r, g, b;
 
 	int state, health;
@@ -48,14 +47,11 @@ public:
 	void SetHealth(int _health);
 	void SetColor(float _r, float _g, float _b);
 	void SetRole(string _role);
-	void SetSpeed(float _speed);
-	void SetRadius(float _radius);
 
 	string GetName();
 	string GetRole();
 	int GetState();
-	float GetSpeed();
-	float GetRadius();
+	int GetHealth();
 	float GetR();
 	float GetG();
 	float GetB();

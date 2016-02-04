@@ -1,5 +1,7 @@
 #pragma once
-class CAssistant
+#include "../GameObject.h"
+
+class CAssistant : public GameObject
 {
 public:
 	enum ASSISTANT

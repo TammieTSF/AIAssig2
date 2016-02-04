@@ -1,13 +1,10 @@
-
 #include "GameObject.h"
 
 GameObject::GameObject(GAMEOBJECT_TYPE typeValue) 
 	: type(typeValue)
 	, scale(1, 1, 1)
 	, active(false)
-	, radius(1.0f)
 	, name("Nil")
-	, speed(0.1f)
 	, role("Nil")
 	, r(1.0f)
 	, g(1.0f)
@@ -47,16 +44,6 @@ void GameObject::SetRole(string _role)
 	role = _role;
 }
 
-void GameObject::SetSpeed(float _speed)
-{
-	speed = _speed;
-}
-
-void GameObject::SetRadius(float _radius)
-{
-	radius = _radius;
-}
-
 string GameObject::GetName()
 {
 	return name;
@@ -72,15 +59,6 @@ int GameObject::GetState()
 	return state;
 }
 
-float GameObject::GetSpeed()
-{
-	return speed;
-}
-float GameObject::GetRadius()
-{
-	return radius;
-}
-
 float GameObject::GetR()
 {
 	return r;
@@ -94,4 +72,9 @@ float GameObject::GetG()
 float GameObject::GetB()
 {
 	return b;
+}
+
+int GameObject::GetHealth()
+{
+	return health;
 }

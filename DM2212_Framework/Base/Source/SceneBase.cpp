@@ -113,19 +113,33 @@ void SceneBase::Init()
 	meshList[GEO_BG] = MeshBuilder::GenerateQuad("background", Color(1,1,1), 1.f);
 	meshList[GEO_BG]->textureID = LoadTGA("Image//background.tga");
 
+	meshList[GEO_AMEDIC] = MeshBuilder::GenerateQuad("assistant medic", Color(1, 1, 1), 1.f);
+	meshList[GEO_AMEDIC]->textureID = LoadTGA("Image//MedicA.tga");
 
-	//lines (left to right)
+	meshList[GEO_MMEDIC] = MeshBuilder::GenerateQuad("main medic", Color(1, 1, 1), 1.f);
+	meshList[GEO_MMEDIC]->textureID = LoadTGA("Image//MedicM.tga");
 
-	//1st line
-	meshList[GEO_FIRSTLINE] = MeshBuilder::GenerateQuad("first line", Color(1, 1, 1), 1.f);
-	//2nd line
-	meshList[GEO_SECONDLINE] = MeshBuilder::GenerateQuad("second line", Color(1, 1, 1), 1.f);
-	//lane top
-	meshList[GEO_LANETOP] = MeshBuilder::GenerateQuad("lane top", Color(1, 0.5019607843137255, 0), 1.f);
-	//lane mid
-	meshList[GEO_LANEMID] = MeshBuilder::GenerateQuad("lane mid", Color(1, 0.5019607843137255, 0), 1.f);
-	//lane bot
-	meshList[GEO_LANEBOT] = MeshBuilder::GenerateQuad("lane bot", Color(1, 0.5019607843137255, 0), 1.f);
+	meshList[GEO_SHOOTER] = MeshBuilder::GenerateQuad("main shoooter", Color(1, 1, 1), 1.f);
+	meshList[GEO_SHOOTER]->textureID = LoadTGA("Image//shooter.tga");
+
+	meshList[GEO_SSHOOTER] = MeshBuilder::GenerateQuad("injured shoooter", Color(1, 1, 1), 1.f);
+	meshList[GEO_SSHOOTER]->textureID = LoadTGA("Image//shooterS.tga");
+
+	meshList[GEO_BSHOOTER] = MeshBuilder::GenerateQuad("backup shooter", Color(1, 1, 1), 1.f);
+	meshList[GEO_BSHOOTER]->textureID = LoadTGA("Image//refiller.tga");
+
+	meshList[GEO_BULLET] = MeshBuilder::GenerateQuad("garlics", Color(1, 1, 1), 1.f);
+	meshList[GEO_BULLET ]->textureID = LoadTGA("Image//garlic.tga");
+
+	meshList[GEO_SUPPLIER] = MeshBuilder::GenerateQuad("Supplier", Color(1, 1, 1), 1.f);
+	meshList[GEO_SUPPLIER]->textureID = LoadTGA("Image//supplierN.tga");
+
+	meshList[GEO_RSUPPLIER] = MeshBuilder::GenerateQuad("Supplier escape", Color(1, 1, 1), 1.f);
+	meshList[GEO_RSUPPLIER]->textureID = LoadTGA("Image//supplierR.tga");
+
+	meshList[GEO_VAMPIRE] = MeshBuilder::GenerateQuad("vampires", Color(1, 1, 1), 1.f);
+	meshList[GEO_VAMPIRE]->textureID = LoadTGA("Image//vampires.tga");
+
 
 	bLightEnabled = false;
 }

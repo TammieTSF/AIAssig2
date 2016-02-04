@@ -50,11 +50,17 @@ public:
 		GEO_CUBE,
 
 		GEO_BG, 
-		GEO_FIRSTLINE,
-		GEO_SECONDLINE,
-		GEO_LANETOP,
-		GEO_LANEMID,
-		GEO_LANEBOT,
+
+		GEO_SHOOTER,		// Garlic Shooter
+		GEO_SSHOOTER,		// Injured Shooter
+		GEO_BSHOOTER,		// Backup Shooter
+		GEO_MMEDIC,			// Main Medic
+		GEO_AMEDIC,			// Assistant Medic
+		GEO_VAMPIRE,		// Vampire
+		GEO_BULLET,			// Bullet
+		GEO_SUPPLIER,		// Supplier
+		GEO_RSUPPLIER,		// Supplier Escape
+
 		NUM_GEOMETRY,
 	};
 

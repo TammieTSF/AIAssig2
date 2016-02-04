@@ -1,23 +1,19 @@
 #pragma once
-class CGBackup
+#include "../GameObject.h"
+class CGBackup : public GameObject
 {
 public:
 	enum BACKUP
 	{
 		ALIVE,
 		SHOOT,
-		RETREAT,
-		RETURN,
-		
+		RETURN, // return to lane
+	
 		IDLE,
 		REFILL,
 		REPLACE,
+		RETURNP, // return to being refiller
 		DIE,
-		
-		HEALING,
-		HEALED,
-		RETURNING,
-		RETURNED,
 	};
 
 	float AmmoPos, AmmoRadius;

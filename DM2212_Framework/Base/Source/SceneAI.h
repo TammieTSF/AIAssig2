@@ -39,7 +39,6 @@ public:
 
 	GameObject* FetchGO();
 
-	CGBackup* FectchShooters();
 	CVampire* FetchVampires();
 
 	CAssistant aMedic;	// Medic Assistant
@@ -86,9 +85,8 @@ protected:
 
 	int m_objectCount;
 	int objectcount;
-
-	//for random vampire spawn
-
+	int RandomIndex;
+	
 	//Probability
 	//float Gprobability; // Gender probability
 };

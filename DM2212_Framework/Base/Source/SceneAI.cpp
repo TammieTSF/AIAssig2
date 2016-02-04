@@ -54,44 +54,52 @@ void SceneAI::Init()
 	objectcount = 1; // Cashier is included. Total amount of objects on screen
 	srand((unsigned)time(NULL));
 
+	//Initialise Lane Booleans
+	Shooter.Lane1Empty = false;
+	Shooter.Lane2Empty = false;
+	Shooter.Lane3Empty = false;
+
+	bShooter.Lane1Empty = false;
+	bShooter.Lane2Empty = false;
+	bShooter.Lane3Empty = false;
+
 	//Probabilities
 	//Gprobability = 50.0f; //gender probability
 
-	m_worldHeight = 100.f;
-	m_worldWidth = m_worldHeight * (float)Application::GetWindowWidth() / Application::GetWindowHeight();
+	// Init Backup Shooter
+	
 
-	//for (int a = 1; a <= 3; a++)
-	//{
-	//	shooter = new MyObject();
-	//	shooter->SetRadius(0.25f);
-	//	shooter->SetColor(0.0f, 0.0f, 0.0f + a % 20);
-	//	shooter->SetPosition(-2.5f, 0.0f + a * 10.f);
-	//	shooter->SetName("Garlic Shooter");
-	//	shooter->SetState(CGShooter::ALIVE);
-	//	shooter->SetHealth(2);
-	//	shooter->SetRole("Main");
-	//}
+	// Init Garlics
+	/*garlic = new GameObject(GameObject::GO_BULLET);
+	garlic->type = GameObject::GO_BULLET;
+	garlic->SetState(CGarlic::INACTIVE);
+	garlic->SetName("Bullet");
+	garlic->SetColor(1.0f, 1.0f, 1.0f);
+	garlic->scale.Set(2, 2, 1);
+	garlic->pos.Set(shooter->pos.x, shooter->pos.y, shooter->pos.z);*/
 
-	//shooterbackup = new MyObject();
-	//shooterbackup->SetRadius(0.25f);
-	//shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
-	//shooterbackup->SetPosition(-1.5f, 0.0f);
-	//shooterbackup->SetName("Garlic Refiller");
-	//shooterbackup->SetState(CGBackup::ALIVE);
-	//shooterbackup->SetHealth(2);
-	//shooterbackup->SetRole("Backup");
+	// Init Grocer
+	grocer = new GameObject(GameObject::GO_SUPPLIER);
+	grocer->SetState(CGrocer::IDLE);
+	grocer->SetName("Grocer");
+	grocer->SetRole("Supplier");
+	grocer->SetColor(1.f, 0.f, 0.f);
+	grocer->scale.Set(6, 6, 1);
 
-	vampire = new GameObject();
+	bShooter.AmmoRadius = 1.0f;
+	bShooter.AmmoLimit = 3;
+	bShooter.AmmoCount = bShooter.AmmoLimit;
+	bShooter.AmmoPos = -4.5f;
 
+
+
+	//vampire = new MyObject();
 	//vampire->SetName("Vampires");
 	//vampire->SetRadius(0.15f);
 	//vampire->SetColor(1.0f, 0.0f, 0.0f);
 	//vampire->SetPosition(5.0f, 0.0f);
 	//vampire->SetHealth(3);
 	//vampire->SetRole("Backup");
-
-	//m_shooter
-
 
 	//Construct Shooter
 	/*
@@ -125,80 +133,279 @@ GameObject* SceneAI::FetchGO()
 	for (int a = 0; a < 10; a++)
 	{
 		//m_goList.push_back(new GameObject(GameObject::GO_CUSTOMER)); // vampire
+		m_goList.push_back(new GameObject(GameObject::GO_VAMPIRE));
 	}
 
 	GameObject *go = m_goList.back();
 	go->active = true;
 	return go;
 }
-
-
-/*Customer* SceneAI::FetchCustomers()
+CVampire* SceneAI::FetchVampires()
 {
-	float z = 0; // initialise the z variable
-	for (GameObject* GO : m_goList)
+	float z = 0;
+	for (GameObject *GO : m_goList)
 	{
-		Customer* customer = dynamic_cast<Customer*>(GO);
-		if (customer != NULL)
+		CVampire * vampires = dynamic_cast<CVampire *> (GO);
+		if (vampires != NULL)
 		{
 			z++;
-			if (customer->active == false)
+			if (vampires->active == false)
 			{
 				RandomIndex = RandomInteger(1, 100);
-				if (RandomIndex <= Gprobability) // 1- 50 = female
+				if (RandomIndex <= 33)
 				{
-					Females++;
-					customer->setToFemale(); // it will crash if there is no if(customer != NULL)
+					vampires->Lane1 = true;
+					vampires->Lane2 = false;
+					vampires->Lane3 = false;
 				}
-				else
+				else if (RandomIndex >= 33 && RandomIndex <= 66)
 				{
-					Males++;
-					customer->setToMale(); //51 - 100 male
+					vampires->Lane1 = false;
+					vampires->Lane2 = true;
+					vampires->Lane3 = false;
 				}
-
+				else if (RandomIndex >= 66 && RandomIndex <= 100)
+				{
+					vampires->Lane1 = false;
+					vampires->Lane2 = false;
+					vampires->Lane3 = true;
+				}
 			}
-			customer->pos.Set(customer->pos.x, customer->pos.y, z / 100);//Each time the loop runs, the z axis is increasing.
-			customer->active = true;
-			return customer; // BEST case scenario
+
+			vampires->pos.Set(vampires->pos.x, vampires->pos.y, vampires->pos.z);
+			vampires->active = true;
+			return vampires;
 		}
 	}
 
 	for (int a = 0; a < 10; a++)
 	{
-		m_goList.push_back(new GameObject(GameObject::GO_CUSTOMER));
+		m_goList.push_back(new GameObject(GameObject::GO_VAMPIRE));
 	}
 
-	Customer* customer = dynamic_cast<Customer*>(m_goList.back());
-	if (customer != NULL)
+	CVampire* vampires = dynamic_cast<CVampire*>(m_goList.back());
+	if (vampires != NULL)
 	{
-		customer->active = true;
-		return customer; // BEST case scenario
+		vampires->active = true;
+		return vampires; // BEST case scenario
 	}
 	return NULL; // worst case scenario. :D
-}*/
+}
 
 void SceneAI::Update(double dt)
 {
 	SceneBase::Update(dt);
-	static float LimitCustomers = 0;
 
-	//do update for customer/supplier movement here.
+	float distance;
+	Vector3 direction, sPos;
+
+	static float limita = 0;
+
+	if (GameObject::GO_SHOOTER)
+	{
+		if (limita < 3)
+		{
+			shooter = FetchGO();
+			shooter->type = GameObject::GO_SHOOTER;
+			shooter->SetState(CGShooter::ALIVE);
+			shooter->SetName("Garlic Shooter");
+			shooter->SetRole("Main");
+			shooter->SetHealth(2);
+			shooter->SetColor(0.0f, 0.0f, 0.1f);
+			shooter->scale.Set(13, 13, 1);
+			shooter->pos.Set(85, 10 + limita * 20, 0);
+
+			switch (shooter->GetState())
+			{
+			case CGShooter::ALIVE:
+			{
+				if (mb.GetMessage() == "Injured")
+				{
+					shooter->SetState(CGShooter::INJURED);
+					shooter->SetRole("Patient");
+
+					if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
+					{
+						mb.SetMessage("Cover up my lane!");
+						mb.SetFromLabel("Main");
+						mb.SetToLabel("Refiller");
+
+						shooterbackup->SetRole("Backup");
+						shooterbackup->SetState(CGBackup::REPLACE);
+					}
+				}
+
+				if (Garlics.garlicLeft == 0)
+				{
+					mb.SetMessage("I need more garlics");
+					mb.SetFromLabel("Main");
+					mb.SetToLabel("Refiller");
+				}
+				break;
+			}
+
+			case CGShooter::INJURED:
+			{
+				// move towards the medic
+
+				// if two vampires attack them at the same time, announce as dead
+
+				/*if (mb.GetMessage() == "Killed")
+				{
+					shooter->SetState(CGShooter::DIED);
+					if(shooterbackup->GetState() != CGBackup::REPLACE)
+					shooterbackup->SetRole("Backup");
+					shooterbackup->SetState(CGBackup::REPLACE);
+				}*/
+				break;
+			}
+			case CGShooter::DIED:
+			{
+				shooter->active = false;
+				
+				break;
+			}
+			}
+
+			limita++;
+		}
+	}
+
+	static float limitB = 0;
+	if (GameObject::GO_BSHOOTER)
+	{
+		if (limitB < 1)
+		{
+			shooterbackup = new GameObject(GameObject::GO_BSHOOTER);
+			shooterbackup->type = GameObject::GO_BSHOOTER;
+			shooterbackup->SetState(CGBackup::ALIVE);
+			shooterbackup->SetName("Garlic Refiller");
+			shooterbackup->SetRole("Refiller");
+			shooterbackup->SetHealth(2);
+			shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
+			shooterbackup->scale.Set(6, 6, 1);
+
+			switch (shooterbackup->GetState())
+			{
+			case CGBackup::IDLE:
+			{
+				if (mb.GetMessage() == "I need more garlics")
+				{
+					shooterbackup->SetState(CGBackup::REFILL);
+					bShooter.AmmoCount = 0;
+				}
+				else
+				{
+					if (bShooter.AmmoCount == 0)
+					{
+						mb.SetMessage("I need restock");
+						mb.SetFromLabel("Refiller");
+						mb.SetToLabel("Supplier");
+					}
+				}
+				break;
+			}
+			}
+
+			limitB++;
+		}
+	}
+
 	dt *= m_speed;
 	m_force.SetZero();
 }
 void SceneAI::RenderGO(GameObject *go)
 {
-	//switch (go->type)
-	//{
-	//case GameObject::GO_CASHIER:
-	//	// Render Cashier
-	//	modelStack.PushMatrix();
-	//	modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
-	//	modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
-	//	RenderMesh(meshList[GEO_CASHIER], false);
-	//	modelStack.PopMatrix();
-	//	break;
-	//}
+	switch (go->type)
+	{
+	case GameObject::GO_AMEDIC:
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		RenderMesh(meshList[GEO_AMEDIC], false);
+		modelStack.PopMatrix();
+		break;
+	}
+	case GameObject::GO_BSHOOTER:
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		RenderMesh(meshList[GEO_BSHOOTER], false);
+		modelStack.PopMatrix();
+		break;
+	}
+	case GameObject::GO_BULLET:
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		RenderMesh(meshList[GEO_BULLET], false);
+		modelStack.PopMatrix();
+		break;
+	}
+	case GameObject::GO_MMEDIC:
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		RenderMesh(meshList[GEO_MMEDIC], false);
+		modelStack.PopMatrix();
+		break;
+	}
+	case GameObject::GO_SHOOTER:
+	{
+		if (shooter->GetState() != CGShooter::INJURED) // as long as the state the shooter is not injured
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+			modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+			RenderMesh(meshList[GEO_SHOOTER], false);
+			modelStack.PopMatrix();
+		}
+
+		else if (shooter->GetState() == CGShooter::INJURED) // if the shooter gets injured
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+			modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+			RenderMesh(meshList[GEO_SSHOOTER], false);
+			modelStack.PopMatrix();
+		}
+		break;
+	}
+	case GameObject::GO_SUPPLIER:
+	{
+		if (grocer->GetState() != CGrocer::RUN) // as long as the grocer does not enter RUN state
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+			modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+			RenderMesh(meshList[GEO_SUPPLIER], false);
+			modelStack.PopMatrix();
+		}
+
+		else if (grocer->GetState() == CGrocer::RUN) // if the grocer enters the RUN state
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+			modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+			RenderMesh(meshList[GEO_RSUPPLIER], false);
+			modelStack.PopMatrix();
+		}
+		break;
+	}
+	case GameObject::GO_VAMPIRE:
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		RenderMesh(meshList[GEO_VAMPIRE], false);
+		modelStack.PopMatrix();
+		break;
+	}
+	}
 }
 
 void SceneAI::Render()
@@ -227,45 +434,11 @@ void SceneAI::Render()
 
 	//render the background image
 	modelStack.PushMatrix();
-	modelStack.Translate(m_worldWidth*0.5f, m_worldHeight*0.425f, -5);
+	modelStack.Translate(m_worldWidth*0.5f, m_worldHeight*0.5f, -5);
 	modelStack.Scale(m_worldWidth, m_worldHeight, 1);
-	//RenderMesh(meshList[GEO_BG], false);
-	modelStack.PopMatrix();
-	
-	//RENDER THE FIRST LINE
-	modelStack.PushMatrix();
-	modelStack.Translate(m_worldWidth * 0.35f, m_worldHeight * 0.3f, -5);
-	modelStack.Scale(1, m_worldHeight, 1);
-	RenderMesh(meshList[GEO_FIRSTLINE], false);
+	RenderMesh(meshList[GEO_BG], false);
 	modelStack.PopMatrix();
 
-	//RENDER THE SECOND LINE
-	modelStack.PushMatrix();
-	modelStack.Translate(m_worldWidth * 0.8f, m_worldHeight * 0.3f, -5);
-	modelStack.Scale(1, m_worldHeight, 1);
-	RenderMesh(meshList[GEO_SECONDLINE], false);
-	modelStack.PopMatrix();
-
-	//RENDER THE LANE TOP
-	modelStack.PushMatrix();
-	modelStack.Translate(m_worldWidth * 0.85f, m_worldHeight * 0.8f, -5);
-	modelStack.Scale(m_worldWidth, 1, 1);
-	RenderMesh(meshList[GEO_LANETOP], false);
-	modelStack.PopMatrix();
-
-	//RENDER THE LANE MID
-	modelStack.PushMatrix();
-	modelStack.Translate(m_worldWidth * 0.85f, m_worldHeight * 0.5f, -5);
-	modelStack.Scale(m_worldWidth, 1, 1);
-	RenderMesh(meshList[GEO_LANEMID], false);
-	modelStack.PopMatrix();
-
-	//RENDER THE LANE MID
-	modelStack.PushMatrix();
-	modelStack.Translate(m_worldWidth * 0.85f, m_worldHeight * 0.2f, -5);
-	modelStack.Scale(m_worldWidth, 1, 1);
-	RenderMesh(meshList[GEO_LANEBOT], false);
-	modelStack.PopMatrix();
 
 	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
 	{
@@ -275,6 +448,7 @@ void SceneAI::Render()
 			RenderGO(go);
 		}
 	}
+
 
 	//Render cashier
 	//RenderGO(m_cashier);
@@ -287,9 +461,8 @@ void SceneAI::Render()
 	//FPS
 	std::ostringstream T_fps;
 	T_fps.precision(5);
-	T_fps << "message board: " << fps; //<----- change to message board
-	RenderTextOnScreen(meshList[GEO_TEXT], T_fps.str(), Color(1, 1, 1), 2, m_worldWidth * .15f, m_worldHeight * 0.57f);
-
+	T_fps << "FPS: " << fps;
+	RenderTextOnScreen(meshList[GEO_TEXT], T_fps.str(), Color(1, 1, 1), 3, 0, 57);
 
 }
 
@@ -305,7 +478,7 @@ void SceneAI::Exit()
 	}
 	/*if (m_cashier)
 	{
-		delete m_cashier;
-		m_cashier = NULL;
+	delete m_cashier;
+	m_cashier = NULL;
 	}*/
 }

@@ -1,5 +1,8 @@
 #pragma once
-class CVampire
+#include "../GameObject.h"
+
+
+class CVampire : public GameObject
 {
 public:
 	enum VAMPIRE
@@ -11,5 +14,9 @@ public:
 		DESTROY,
 		DIE,
 	};
+
+	bool Lane1;
+	bool Lane2;
+	bool Lane3;
 };
 
