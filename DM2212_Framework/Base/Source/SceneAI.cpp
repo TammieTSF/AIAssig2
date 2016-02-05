@@ -7,9 +7,9 @@
 #define mainMediclimit 1
 #define assistantMediclimit 1
 
-SceneAI::SceneAI():
+SceneAI::SceneAI() :
 vampCount(1)
-,vampLimiter(0)
+, vampLimiter(0)
 {
 }
 
@@ -104,7 +104,6 @@ void SceneAI::Init()
 	bShooter.AmmoLimit = 3;
 	bShooter.AmmoCount = bShooter.AmmoLimit;
 	bShooter.AmmoPos = -4.5f;
-<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
 
 
 	//Assistant medic
@@ -117,29 +116,6 @@ void SceneAI::Init()
 	medicassistant->scale.Set(6, 6, 1);
 	medicassistant->pos.Set(70, 50, medicassistant->pos.z);
 
-	//medicassistant->SetColor();
-	//vampire = new MyObject();
-	//vampire->SetName("Vampires");
-	//vampire->SetRadius(0.15f);
-	//vampire->SetColor(1.0f, 0.0f, 0.0f);
-	//vampire->SetPosition(5.0f, 0.0f);
-	//vampire->SetHealth(3);
-	//vampire->SetRole("Backup");
-
-	//Construct Shooter
-	/*
-	m_cashier = new GameObject(GameObject::GO_CASHIER);
-	m_cashier->active = true;
-	m_cashier->scale.Set(6, 6, 6);
-	m_cashier->pos.Set(m_worldWidth * 0.5f, m_worldHeight * .71f, m_cashier->pos.z);
-
-	//Construct Medic
-	Customer* customer = new Customer();
-	customer->setToFemale();
-	customer->SetEnterState();
-	m_goList.push_back(customer);*/
-=======
->>>>>>> f393741a14309b3fe45881143fa86f690795c20d
 }
 
 GameObject* SceneAI::FetchGO()
@@ -166,76 +142,35 @@ GameObject* SceneAI::FetchGO()
 	go->active = true;
 	return go;
 }
-<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
-
-//CVampire* SceneAI::FetchVampires()
-//{
-//	float z = 0;
-//	for (GameObject *GO : m_goList)
-//	{
-//		CVampire * vampires = dynamic_cast<CVampire *> (GO);
-//		if (vampires != NULL)
-//		{
-//			z++;
-//			if (vampires->active == false)
-//			{
-//				RandomIndex = RandomInteger(1, 3);
-//				if (RandomIndex == 1)
-//				{
-//					vampires->Lane1 = true;
-//					vampires->Lane2 = false;
-//					vampires->Lane3 = false;
-//				}
-//				else if (RandomIndex == 2)
-//				{
-//					vampires->Lane1 = false;
-//					vampires->Lane2 = true;
-//					vampires->Lane3 = false;
-//				}
-//				else if (RandomIndex == 3)
-//				{
-//					vampires->Lane1 = false;
-//					vampires->Lane2 = false;
-//					vampires->Lane3 = true;
-//				}
-//			}
-//
-//			vampires->pos.Set(vampires->pos.x, vampires->pos.y, vampires->pos.z);
-//			vampires->active = true;
-//			return vampires;
-//		}
-//	}
-//
-//	for (int a = 0; a < 10; a++)
-//	{
-//		m_goList.push_back(new GameObject(GameObject::GO_VAMPIRE));
-//	}
-//
-//	CVampire* vampires = dynamic_cast<CVampire*>(m_goList.back());
-//	if (vampires != NULL)
-//	{
-//		vampires->active = true;
-//		return vampires; // BEST case scenario
-//	}
-//	return NULL; // worst case scenario. :D
-//}
 
 void SceneAI::Update(double dt)
 {
+	SceneBase::Update(dt);
 	vampLimiter += dt;
-
-	SceneBase::Update(dt);
-=======
-
-void SceneAI::Update(double dt)
-{
-	SceneBase::Update(dt);
 
 	float distance;
 	Vector3 direction, sPos;
 
-	static float limita = 0;
 
+
+	//vampire states
+	translatevamp--;
+
+	if (vampCount < vampirelimit && vampLimiter > 1) //60 frames per second
+	{
+		vampLimiter = 0;
+		vampCount++;
+
+		vampire = FetchGO();
+		vampire->type = GameObject::GO_VAMPIRE;
+		vampire->SetName("Vampire " + vampCount);
+		vampire->SetHealth(3);
+		vampire->SetRole("kill at sight");
+		vampire->SetColor(0.0f, 0.0f, 0.0f);
+		vampire->scale.Set(13, 13, 1);
+		vampire->pos.Set(200, RandomLane(), vampire->pos.z);
+	}
+	static float limita = 0;
 	if (limita < 1)
 	{
 		shooter = FetchGO();
@@ -304,7 +239,6 @@ void SceneAI::Update(double dt)
 			// move towards the medic
 
 			// if two vampires attack them at the same time, announce as dead
->>>>>>> f393741a14309b3fe45881143fa86f690795c20d
 
 			if (mb.GetMessage() == "Killed")
 			{
@@ -323,77 +257,9 @@ void SceneAI::Update(double dt)
 				mb.SetMessage("I'll take over!");
 				mb.SetFromLabel("Refiller");
 				mb.SetToLabel("Main");
-
-<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
-	static float limita = 0;
-	//vampire states
-	translatevamp--;
-
-	if (vampCount < vampirelimit && vampLimiter > 1) //60 frames per second
-	{
-		vampLimiter = 0;
-		vampCount++;
-
-		vampire = FetchGO();
-		vampire->type = GameObject::GO_VAMPIRE;
-		vampire->SetName("Vampire " + vampCount);
-		vampire->SetHealth(3);
-		vampire->SetRole("kill at sight");
-		vampire->SetColor(0.0f, 0.0f, 0.0f);
-		vampire->scale.Set(13, 13, 1);
-		vampire->pos.Set(100 , RandomLane(), vampire->pos.z);
-
-	}
-
-	//for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-	//{
-	//	GameObject *go = (GameObject *)*it;
-	//	if (go->type == GameObject::GO_VAMPIRE)
-	//	{
-	//		go->pos.Set(100 + translatevamp, RandomLane(), vampire->pos.z);
-	//	}
-	//}
-	//shooter states
-	if (GameObject::GO_SHOOTER)
-	{
-		if (limita < 3)
-		{
-			shooter = FetchGO();
-			shooter->type = GameObject::GO_SHOOTER;
-			shooter->SetState(CGShooter::ALIVE);
-			shooter->SetName("Garlic Shooter");
-			shooter->SetRole("Main");
-			shooter->SetHealth(2);
-			shooter->SetColor(0.0f, 0.0f, 0.1f);
-			shooter->scale.Set(13, 13, 1);
-			shooter->pos.Set(85, 10 + limita * 20, 0);
-
-
-			//shooter state
-			switch (shooter->GetState())
-=======
-				shooterbackup->SetRole("Backup");
-				shooterbackup->SetState(CGBackup::REPLACE); // REPLACE THE DEAD SHOOTER
-			}
-			break;
-		}
-		case CGShooter::RETURN:
-		{
-			// return to previous position
-
-			if (shooterbackup->GetState() == CGBackup::REPLACE) // if the backup is not already replacing someone
->>>>>>> f393741a14309b3fe45881143fa86f690795c20d
-			{
-				mb.SetMessage("I'm coming back");
-				mb.SetFromLabel("Main");
-				mb.SetToLabel("Backup");
-
-				shooterbackup->SetRole("Refiller");
-				shooterbackup->SetState(CGBackup::RETURNB); // REPLACE THE DEAD SHOOTER
 			}
 		}
 		}
-
 
 		// For shooter 2 ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~
 		switch (shooter2->GetState())
@@ -460,20 +326,19 @@ void SceneAI::Update(double dt)
 
 			if (shooterbackup->GetState() == CGBackup::REPLACE) // if the backup is not already replacing someone
 			{
-<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
-									   // move towards the medic
+				// move towards the medic
 
-									   // if two vampires attack them at the same time, announce as dead
+				// if two vampires attack them at the same time, announce as dead
 
-									   /*if (mb.GetMessage() == "Killed")
-									   {
-									   shooter->SetState(CGShooter::DIED);
-									   if(shooterbackup->GetState() != CGBackup::REPLACE)
-									   shooterbackup->SetRole("Backup");
-									   shooterbackup->SetState(CGBackup::REPLACE);
-									   }*/
-									   break;
-=======
+				/*if (mb.GetMessage() == "Killed")
+				{
+				shooter->SetState(CGShooter::DIED);
+				if(shooterbackup->GetState() != CGBackup::REPLACE)
+				shooterbackup->SetRole("Backup");
+				shooterbackup->SetState(CGBackup::REPLACE);
+				}*/
+				break;
+
 				mb.SetMessage("I'm coming back");
 				mb.SetFromLabel("Main");
 				mb.SetToLabel("Backup");
@@ -503,20 +368,20 @@ void SceneAI::Update(double dt)
 					shooterbackup->SetRole("Backup");
 					shooterbackup->SetState(CGBackup::REPLACE); // BACKUP WILL REPLACE INJURED SHOOTER
 				}
->>>>>>> f393741a14309b3fe45881143fa86f690795c20d
+
 			}
 
 			if (Garlics.garlicLeft == 0) // IF THERE IS NO MORE GARLICS
 			{
-<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
-									shooter->active = false;
 
-									break;
-=======
+				shooter->active = false;
+
+				break;
+
 				mb.SetMessage("I need more garlics");
 				mb.SetFromLabel("Main");
 				mb.SetToLabel("Refiller");
->>>>>>> f393741a14309b3fe45881143fa86f690795c20d
+
 			}
 			break;
 		}
@@ -784,7 +649,6 @@ void SceneAI::Update(double dt)
 	}
 
 	dt *= m_speed;
-
 	m_force.SetZero();
 }
 void SceneAI::RenderGO(GameObject *go)
@@ -937,10 +801,7 @@ void SceneAI::Render()
 	std::ostringstream T_vampcount;
 	T_vampcount.precision(5);
 	T_vampcount << "vampcount: " << vampLimiter;
-	RenderTextOnScreen(meshList[GEO_TEXT], T_vampcount.str(), Color(1, 1, 1), 3, 0, 37);
-	
-
-
+	//RenderTextOnScreen(meshList[GEO_TEXT], T_vampcount.str(), Color(1, 1, 1), 3, 0, 37);
 
 	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
 	{
@@ -948,8 +809,8 @@ void SceneAI::Render()
 		if (go->type == go->GO_VAMPIRE)
 		{
 			std::ostringstream T_vampHealth;
-			T_vampHealth << "Health: " + go->GetHealth();
-			RenderTextOnScreen(meshList[GEO_TEXT], T_vampHealth.str(), Color(1, 1, 1), 3, go->pos.x, go->pos.y - 5.f);
+			//T_vampHealth << "Health: " + go->GetHealth();
+		//	RenderTextOnScreen(meshList[GEO_TEXT], T_vampHealth.str(), Color(1, 1, 1), 3, go->pos.x, go->pos.y - 5.f);
 		}
 	}
 }
@@ -964,9 +825,4 @@ void SceneAI::Exit()
 		delete go;
 		m_goList.pop_back();
 	}
-	/*if (m_cashier)
-	{
-	delete m_cashier;
-	m_cashier = NULL;
-	}*/
 }
