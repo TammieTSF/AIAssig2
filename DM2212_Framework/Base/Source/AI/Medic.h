@@ -1,4 +1,6 @@
 #pragma once
+
+#include "../GameObject.h"
 class CMedic
 {
 public:

@@ -57,6 +57,8 @@ public:
 	bool Detect(Vector3 pos1, Vector3 pos2, float radius1, float radius2);
 	float GetDistance(float x1, float y1, float x2, float y2);
 
+	float RandomLane();
+
 protected:
 
 	//Physics
@@ -86,7 +88,12 @@ protected:
 	int m_objectCount;
 	int objectcount;
 	int RandomIndex;
-	
+
+	//vamp variables
+	int vampCount;
+	float vampLimiter;
+	float translatevamp;
+
 	//Probability
 	//float Gprobability; // Gender probability
 };

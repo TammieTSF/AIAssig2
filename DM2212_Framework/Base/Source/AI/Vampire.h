@@ -9,8 +9,7 @@ public:
 	{
 		MOVE,
 		STAY,
-		CHANGE,
-		DISAPPEAR,
+		CHANGELANE,
 		DESTROY,
 		DIE,
 	};

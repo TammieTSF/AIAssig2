@@ -3,7 +3,13 @@
 #include "Application.h"
 #include <sstream>
 
-SceneAI::SceneAI()
+#define vampirelimit 5
+#define mainMediclimit 1
+#define assistantMediclimit 1
+
+SceneAI::SceneAI():
+vampCount(1)
+,vampLimiter(0)
 {
 }
 
@@ -38,6 +44,23 @@ bool SceneAI::Detect(Vector3 pos1, Vector3 pos2, float radius1, float radius2)
 	return detect;
 }
 
+float SceneAI::RandomLane()
+{
+	int temp = RandomInteger(1, 3);
+
+	switch (temp)
+	{
+	case 1:
+		return 10.f;
+		break;
+	case 2:
+		return 30.f;
+		break;
+	case 3:
+		return 50.f;
+		break;
+	}
+}
 
 void SceneAI::Init()
 {
@@ -92,7 +115,17 @@ void SceneAI::Init()
 	bShooter.AmmoPos = -4.5f;
 
 
+	//Assistant medic
+	medicassistant = FetchGO();
+	medicassistant = new GameObject(GameObject::GO_AMEDIC);
+	medicassistant->SetState(CAssistant::IDLE);
+	medicassistant->SetName("Assistant medic");
+	medicassistant->SetRole("Second healer");
+	medicassistant->SetColor(1.f, 1.f, 1.f);
+	medicassistant->scale.Set(6, 6, 1);
+	medicassistant->pos.Set(70, 50, medicassistant->pos.z);
 
+	//medicassistant->SetColor();
 	//vampire = new MyObject();
 	//vampire->SetName("Vampires");
 	//vampire->SetRadius(0.15f);
@@ -140,67 +173,97 @@ GameObject* SceneAI::FetchGO()
 	go->active = true;
 	return go;
 }
-CVampire* SceneAI::FetchVampires()
-{
-	float z = 0;
-	for (GameObject *GO : m_goList)
-	{
-		CVampire * vampires = dynamic_cast<CVampire *> (GO);
-		if (vampires != NULL)
-		{
-			z++;
-			if (vampires->active == false)
-			{
-				RandomIndex = RandomInteger(1, 100);
-				if (RandomIndex <= 33)
-				{
-					vampires->Lane1 = true;
-					vampires->Lane2 = false;
-					vampires->Lane3 = false;
-				}
-				else if (RandomIndex >= 33 && RandomIndex <= 66)
-				{
-					vampires->Lane1 = false;
-					vampires->Lane2 = true;
-					vampires->Lane3 = false;
-				}
-				else if (RandomIndex >= 66 && RandomIndex <= 100)
-				{
-					vampires->Lane1 = false;
-					vampires->Lane2 = false;
-					vampires->Lane3 = true;
-				}
-			}
 
-			vampires->pos.Set(vampires->pos.x, vampires->pos.y, vampires->pos.z);
-			vampires->active = true;
-			return vampires;
-		}
-	}
-
-	for (int a = 0; a < 10; a++)
-	{
-		m_goList.push_back(new GameObject(GameObject::GO_VAMPIRE));
-	}
-
-	CVampire* vampires = dynamic_cast<CVampire*>(m_goList.back());
-	if (vampires != NULL)
-	{
-		vampires->active = true;
-		return vampires; // BEST case scenario
-	}
-	return NULL; // worst case scenario. :D
-}
+//CVampire* SceneAI::FetchVampires()
+//{
+//	float z = 0;
+//	for (GameObject *GO : m_goList)
+//	{
+//		CVampire * vampires = dynamic_cast<CVampire *> (GO);
+//		if (vampires != NULL)
+//		{
+//			z++;
+//			if (vampires->active == false)
+//			{
+//				RandomIndex = RandomInteger(1, 3);
+//				if (RandomIndex == 1)
+//				{
+//					vampires->Lane1 = true;
+//					vampires->Lane2 = false;
+//					vampires->Lane3 = false;
+//				}
+//				else if (RandomIndex == 2)
+//				{
+//					vampires->Lane1 = false;
+//					vampires->Lane2 = true;
+//					vampires->Lane3 = false;
+//				}
+//				else if (RandomIndex == 3)
+//				{
+//					vampires->Lane1 = false;
+//					vampires->Lane2 = false;
+//					vampires->Lane3 = true;
+//				}
+//			}
+//
+//			vampires->pos.Set(vampires->pos.x, vampires->pos.y, vampires->pos.z);
+//			vampires->active = true;
+//			return vampires;
+//		}
+//	}
+//
+//	for (int a = 0; a < 10; a++)
+//	{
+//		m_goList.push_back(new GameObject(GameObject::GO_VAMPIRE));
+//	}
+//
+//	CVampire* vampires = dynamic_cast<CVampire*>(m_goList.back());
+//	if (vampires != NULL)
+//	{
+//		vampires->active = true;
+//		return vampires; // BEST case scenario
+//	}
+//	return NULL; // worst case scenario. :D
+//}
 
 void SceneAI::Update(double dt)
 {
+	vampLimiter += dt;
+
 	SceneBase::Update(dt);
 
 	float distance;
 	Vector3 direction, sPos;
 
 	static float limita = 0;
+	//vampire states
+	translatevamp--;
 
+	if (vampCount < vampirelimit && vampLimiter > 1) //60 frames per second
+	{
+		vampLimiter = 0;
+		vampCount++;
+
+		vampire = FetchGO();
+		vampire->type = GameObject::GO_VAMPIRE;
+		vampire->SetName("Vampire " + vampCount);
+		vampire->SetHealth(3);
+		vampire->SetRole("kill at sight");
+		vampire->SetColor(0.0f, 0.0f, 0.0f);
+		vampire->scale.Set(13, 13, 1);
+		vampire->pos.Set(100 , RandomLane(), vampire->pos.z);
+
+	}
+
+	//for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	//{
+	//	GameObject *go = (GameObject *)*it;
+	//	if (go->type == GameObject::GO_VAMPIRE)
+	//	{
+	//		go->pos.Set(100 + translatevamp, RandomLane(), vampire->pos.z);
+	//	}
+	//}
+	//shooter states
 	if (GameObject::GO_SHOOTER)
 	{
 		if (limita < 3)
@@ -215,6 +278,8 @@ void SceneAI::Update(double dt)
 			shooter->scale.Set(13, 13, 1);
 			shooter->pos.Set(85, 10 + limita * 20, 0);
 
+
+			//shooter state
 			switch (shooter->GetState())
 			{
 			case CGShooter::ALIVE:
@@ -246,24 +311,24 @@ void SceneAI::Update(double dt)
 
 			case CGShooter::INJURED:
 			{
-				// move towards the medic
+									   // move towards the medic
 
-				// if two vampires attack them at the same time, announce as dead
+									   // if two vampires attack them at the same time, announce as dead
 
-				/*if (mb.GetMessage() == "Killed")
-				{
-					shooter->SetState(CGShooter::DIED);
-					if(shooterbackup->GetState() != CGBackup::REPLACE)
-					shooterbackup->SetRole("Backup");
-					shooterbackup->SetState(CGBackup::REPLACE);
-				}*/
-				break;
+									   /*if (mb.GetMessage() == "Killed")
+									   {
+									   shooter->SetState(CGShooter::DIED);
+									   if(shooterbackup->GetState() != CGBackup::REPLACE)
+									   shooterbackup->SetRole("Backup");
+									   shooterbackup->SetState(CGBackup::REPLACE);
+									   }*/
+									   break;
 			}
 			case CGShooter::DIED:
 			{
-				shooter->active = false;
-				
-				break;
+									shooter->active = false;
+
+									break;
 			}
 			}
 
@@ -464,6 +529,25 @@ void SceneAI::Render()
 	T_fps << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], T_fps.str(), Color(1, 1, 1), 3, 0, 57);
 
+	//FPS
+	std::ostringstream T_vampcount;
+	T_vampcount.precision(5);
+	T_vampcount << "vampcount: " << vampLimiter;
+	RenderTextOnScreen(meshList[GEO_TEXT], T_vampcount.str(), Color(1, 1, 1), 3, 0, 37);
+	
+
+
+
+	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	{
+		GameObject *go = (GameObject *)*it;
+		if (go->type == go->GO_VAMPIRE)
+		{
+			std::ostringstream T_vampHealth;
+			T_vampHealth << "Health: " + go->GetHealth();
+			RenderTextOnScreen(meshList[GEO_TEXT], T_vampHealth.str(), Color(1, 1, 1), 3, go->pos.x, go->pos.y - 5.f);
+		}
+	}
 }
 
 void SceneAI::Exit()

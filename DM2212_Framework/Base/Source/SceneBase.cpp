@@ -138,7 +138,7 @@ void SceneBase::Init()
 	meshList[GEO_RSUPPLIER]->textureID = LoadTGA("Image//supplierR.tga");
 
 	meshList[GEO_VAMPIRE] = MeshBuilder::GenerateQuad("vampires", Color(1, 1, 1), 1.f);
-	meshList[GEO_VAMPIRE]->textureID = LoadTGA("Image//vampires.tga");
+	meshList[GEO_VAMPIRE]->textureID = LoadTGA("Image//vampire.tga");
 
 
 	bLightEnabled = false;
