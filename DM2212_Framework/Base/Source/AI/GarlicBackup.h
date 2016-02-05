@@ -6,13 +6,13 @@ public:
 	enum BACKUP
 	{
 		ALIVE,
-		SHOOT,
-		RETURN, // return to lane
-	
 		IDLE,
 		REFILL,
 		REPLACE,
-		RETURNP, // return to being refiller
+		REPLACING,	// REPLACING ONE SHOOTER ALREADY
+		RETURNB,	// RETURN TO BEING A REFILLER
+		INJURED,
+		RETURNL,	// RETURN TO LANE IF INJRUED
 		DIE,
 	};
 

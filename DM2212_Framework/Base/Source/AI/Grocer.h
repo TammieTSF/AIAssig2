@@ -7,9 +7,6 @@ public:
 		IDLE,
 		SUPPLY,
 		RUN,
-
-		SUPPLYING,
-		SUPPLIED,
 	};
 
 };

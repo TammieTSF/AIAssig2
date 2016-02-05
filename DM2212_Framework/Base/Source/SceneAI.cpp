@@ -89,18 +89,6 @@ void SceneAI::Init()
 	//Probabilities
 	//Gprobability = 50.0f; //gender probability
 
-	// Init Backup Shooter
-	
-
-	// Init Garlics
-	/*garlic = new GameObject(GameObject::GO_BULLET);
-	garlic->type = GameObject::GO_BULLET;
-	garlic->SetState(CGarlic::INACTIVE);
-	garlic->SetName("Bullet");
-	garlic->SetColor(1.0f, 1.0f, 1.0f);
-	garlic->scale.Set(2, 2, 1);
-	garlic->pos.Set(shooter->pos.x, shooter->pos.y, shooter->pos.z);*/
-
 	// Init Grocer
 	grocer = new GameObject(GameObject::GO_SUPPLIER);
 	grocer->SetState(CGrocer::IDLE);
@@ -109,10 +97,14 @@ void SceneAI::Init()
 	grocer->SetColor(1.f, 0.f, 0.f);
 	grocer->scale.Set(6, 6, 1);
 
+	Garlics.garlicGiven = 1;
+	Garlics.garlicLeft = Garlics.garlicGiven;
+
 	bShooter.AmmoRadius = 1.0f;
 	bShooter.AmmoLimit = 3;
 	bShooter.AmmoCount = bShooter.AmmoLimit;
 	bShooter.AmmoPos = -4.5f;
+<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
 
 
 	//Assistant medic
@@ -146,6 +138,8 @@ void SceneAI::Init()
 	customer->setToFemale();
 	customer->SetEnterState();
 	m_goList.push_back(customer);*/
+=======
+>>>>>>> f393741a14309b3fe45881143fa86f690795c20d
 }
 
 GameObject* SceneAI::FetchGO()
@@ -165,7 +159,6 @@ GameObject* SceneAI::FetchGO()
 	//Restock the list when m_goList runs out of object
 	for (int a = 0; a < 10; a++)
 	{
-		//m_goList.push_back(new GameObject(GameObject::GO_CUSTOMER)); // vampire
 		m_goList.push_back(new GameObject(GameObject::GO_VAMPIRE));
 	}
 
@@ -173,6 +166,7 @@ GameObject* SceneAI::FetchGO()
 	go->active = true;
 	return go;
 }
+<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
 
 //CVampire* SceneAI::FetchVampires()
 //{
@@ -231,10 +225,106 @@ void SceneAI::Update(double dt)
 	vampLimiter += dt;
 
 	SceneBase::Update(dt);
+=======
+
+void SceneAI::Update(double dt)
+{
+	SceneBase::Update(dt);
 
 	float distance;
 	Vector3 direction, sPos;
 
+	static float limita = 0;
+
+	if (limita < 1)
+	{
+		shooter = FetchGO();
+		shooter->type = GameObject::GO_SHOOTER;
+		shooter->SetState(CGShooter::ALIVE);
+		shooter->SetName("Garlic Shooter");
+		shooter->SetRole("Main");
+		shooter->SetHealth(2);
+		shooter->SetColor(0.0f, 0.0f, 0.1f);
+		shooter->scale.Set(13, 13, 1);
+		shooter->pos.Set(85, 10, 1);
+
+		shooter2 = FetchGO();
+		shooter2->type = GameObject::GO_SHOOTER;
+		shooter2->SetState(CGShooter::ALIVE);
+		shooter2->SetName("Garlic Shooter");
+		shooter2->SetRole("Main");
+		shooter2->SetHealth(2);
+		shooter2->SetColor(0.0f, 0.0f, 0.1f);
+		shooter2->scale.Set(13, 13, 1);
+		shooter2->pos.Set(85, 30, 1);
+
+		shooter3 = FetchGO();
+		shooter3->type = GameObject::GO_SHOOTER;
+		shooter3->SetState(CGShooter::ALIVE);
+		shooter3->SetName("Garlic Shooter");
+		shooter3->SetRole("Main");
+		shooter3->SetHealth(2);
+		shooter3->SetColor(0.0f, 0.0f, 0.1f);
+		shooter3->scale.Set(13, 13, 1);
+		shooter3->pos.Set(85, 50, 1);
+
+
+		// For shooter 1 ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~
+		switch (shooter->GetState())
+		{
+		case CGShooter::ALIVE:
+		{
+			if (mb.GetMessage() == "Injured") // CHECK IF SHOOTER HAS BEEN INJURED
+			{
+				shooter->SetState(CGShooter::INJURED); // SET THEIR STATE AS INJURED
+				shooter->SetRole("Patient"); // SET THEIR ROLE TO A PATIENT
+
+				if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
+				{
+					mb.SetMessage("Cover up my lane!");
+					mb.SetFromLabel("Main");
+					mb.SetToLabel("Refiller");
+
+					shooterbackup->SetRole("Backup");
+					shooterbackup->SetState(CGBackup::REPLACE); // BACKUP WILL REPLACE INJURED SHOOTER
+				}
+			}
+
+			if (Garlics.garlicLeft == 0) // IF THERE IS NO MORE GARLICS
+			{
+				mb.SetMessage("I need more garlics");
+				mb.SetFromLabel("Main");
+				mb.SetToLabel("Refiller");
+			}
+			break;
+		}
+
+		case CGShooter::INJURED:
+		{
+			// move towards the medic
+
+			// if two vampires attack them at the same time, announce as dead
+>>>>>>> f393741a14309b3fe45881143fa86f690795c20d
+
+			if (mb.GetMessage() == "Killed")
+			{
+				shooter->SetState(CGShooter::DIED);
+				if (shooterbackup->GetState() != CGBackup::REPLACE)
+					shooterbackup->SetRole("Backup");
+				shooterbackup->SetState(CGBackup::REPLACE);
+			}
+			break;
+		}
+		case CGShooter::DIED:
+		{
+			shooter->active = false;
+			if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
+			{
+				mb.SetMessage("I'll take over!");
+				mb.SetFromLabel("Refiller");
+				mb.SetToLabel("Main");
+
+<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
 	static float limita = 0;
 	//vampire states
 	translatevamp--;
@@ -281,36 +371,96 @@ void SceneAI::Update(double dt)
 
 			//shooter state
 			switch (shooter->GetState())
+=======
+				shooterbackup->SetRole("Backup");
+				shooterbackup->SetState(CGBackup::REPLACE); // REPLACE THE DEAD SHOOTER
+			}
+			break;
+		}
+		case CGShooter::RETURN:
+		{
+			// return to previous position
+
+			if (shooterbackup->GetState() == CGBackup::REPLACE) // if the backup is not already replacing someone
+>>>>>>> f393741a14309b3fe45881143fa86f690795c20d
 			{
-			case CGShooter::ALIVE:
+				mb.SetMessage("I'm coming back");
+				mb.SetFromLabel("Main");
+				mb.SetToLabel("Backup");
+
+				shooterbackup->SetRole("Refiller");
+				shooterbackup->SetState(CGBackup::RETURNB); // REPLACE THE DEAD SHOOTER
+			}
+		}
+		}
+
+
+		// For shooter 2 ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~
+		switch (shooter2->GetState())
+		{
+		case CGShooter::ALIVE:
+		{
+			if (mb.GetMessage() == "Injured") // CHECK IF SHOOTER HAS BEEN INJURED
 			{
-				if (mb.GetMessage() == "Injured")
+				shooter2->SetState(CGShooter::INJURED); // SET THEIR STATE AS INJURED
+				shooter2->SetRole("Patient"); // SET THEIR ROLE TO A PATIENT
+
+				if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
 				{
-					shooter->SetState(CGShooter::INJURED);
-					shooter->SetRole("Patient");
-
-					if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
-					{
-						mb.SetMessage("Cover up my lane!");
-						mb.SetFromLabel("Main");
-						mb.SetToLabel("Refiller");
-
-						shooterbackup->SetRole("Backup");
-						shooterbackup->SetState(CGBackup::REPLACE);
-					}
-				}
-
-				if (Garlics.garlicLeft == 0)
-				{
-					mb.SetMessage("I need more garlics");
+					mb.SetMessage("Cover up my lane!");
 					mb.SetFromLabel("Main");
 					mb.SetToLabel("Refiller");
+
+					shooterbackup->SetRole("Backup");
+					shooterbackup->SetState(CGBackup::REPLACE); // BACKUP WILL REPLACE INJURED SHOOTER
 				}
-				break;
 			}
 
-			case CGShooter::INJURED:
+			if (Garlics.garlicLeft == 0) // IF THERE IS NO MORE GARLICS
 			{
+				mb.SetMessage("I need more garlics");
+				mb.SetFromLabel("Main");
+				mb.SetToLabel("Refiller");
+			}
+			break;
+		}
+
+		case CGShooter::INJURED:
+		{
+			// move towards the medic
+
+			// if two vampires attack them at the same time, announce as dead
+
+			if (mb.GetMessage() == "Killed")
+			{
+				shooter2->SetState(CGShooter::DIED);
+				if (shooterbackup->GetState() != CGBackup::REPLACE)
+					shooterbackup->SetRole("Backup");
+				shooterbackup->SetState(CGBackup::REPLACE);
+			}
+			break;
+		}
+		case CGShooter::DIED:
+		{
+			shooter2->active = false;
+			if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
+			{
+				mb.SetMessage("I'll take over!");
+				mb.SetFromLabel("Refiller");
+				mb.SetToLabel("Main");
+
+				shooterbackup->SetRole("Backup");
+				shooterbackup->SetState(CGBackup::REPLACE); // REPLACE THE DEAD SHOOTER
+			}
+			break;
+		}
+		case CGShooter::RETURN:
+		{
+			// return to previous position
+
+			if (shooterbackup->GetState() == CGBackup::REPLACE) // if the backup is not already replacing someone
+			{
+<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
 									   // move towards the medic
 
 									   // if two vampires attack them at the same time, announce as dead
@@ -323,60 +473,318 @@ void SceneAI::Update(double dt)
 									   shooterbackup->SetState(CGBackup::REPLACE);
 									   }*/
 									   break;
+=======
+				mb.SetMessage("I'm coming back");
+				mb.SetFromLabel("Main");
+				mb.SetToLabel("Backup");
+
+				shooterbackup->SetRole("Refiller");
+				shooterbackup->SetState(CGBackup::RETURNB); // REPLACE THE DEAD SHOOTER
 			}
-			case CGShooter::DIED:
+		}
+		}
+
+		// For shooter 3 ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~
+		switch (shooter->GetState())
+		{
+		case CGShooter::ALIVE:
+		{
+			if (mb.GetMessage() == "Injured") // CHECK IF SHOOTER HAS BEEN INJURED
 			{
+				shooter3->SetState(CGShooter::INJURED); // SET THEIR STATE AS INJURED
+				shooter3->SetRole("Patient"); // SET THEIR ROLE TO A PATIENT
+
+				if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
+				{
+					mb.SetMessage("Cover up my lane!");
+					mb.SetFromLabel("Main");
+					mb.SetToLabel("Refiller");
+
+					shooterbackup->SetRole("Backup");
+					shooterbackup->SetState(CGBackup::REPLACE); // BACKUP WILL REPLACE INJURED SHOOTER
+				}
+>>>>>>> f393741a14309b3fe45881143fa86f690795c20d
+			}
+
+			if (Garlics.garlicLeft == 0) // IF THERE IS NO MORE GARLICS
+			{
+<<<<<<< c72f080b514c7df15737d62e6b680c161593d67e
 									shooter->active = false;
 
 									break;
+=======
+				mb.SetMessage("I need more garlics");
+				mb.SetFromLabel("Main");
+				mb.SetToLabel("Refiller");
+>>>>>>> f393741a14309b3fe45881143fa86f690795c20d
 			}
-			}
-
-			limita++;
+			break;
 		}
+
+		case CGShooter::INJURED:
+		{
+			// move towards the medic
+
+			// if two vampires attack them at the same time, announce as dead
+
+			if (mb.GetMessage() == "Killed")
+			{
+				shooter3->SetState(CGShooter::DIED);
+				if (shooterbackup->GetState() != CGBackup::REPLACE)
+					shooterbackup->SetRole("Backup");
+				shooterbackup->SetState(CGBackup::REPLACE);
+			}
+			break;
+		}
+		case CGShooter::DIED:
+		{
+			shooter3->active = false;
+			if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
+			{
+				mb.SetMessage("I'll take over!");
+				mb.SetFromLabel("Refiller");
+				mb.SetToLabel("Main");
+
+				shooterbackup->SetRole("Backup");
+				shooterbackup->SetState(CGBackup::REPLACE); // REPLACE THE DEAD SHOOTER
+			}
+			break;
+		}
+		case CGShooter::RETURN:
+		{
+			// return to previous position
+
+			if (shooterbackup->GetState() == CGBackup::REPLACE) // if the backup is not already replacing someone
+			{
+				mb.SetMessage("I'm coming back");
+				mb.SetFromLabel("Main");
+				mb.SetToLabel("Backup");
+
+				shooterbackup->SetRole("Refiller");
+				shooterbackup->SetState(CGBackup::RETURNB); // REPLACE THE DEAD SHOOTER
+			}
+		}
+		}
+
+		limita++;
 	}
 
 	static float limitB = 0;
-	if (GameObject::GO_BSHOOTER)
+
+	if (limitB < 1)
 	{
-		if (limitB < 1)
+		shooterbackup = new GameObject(GameObject::GO_BSHOOTER);
+		shooterbackup->type = GameObject::GO_BSHOOTER;
+		shooterbackup->SetState(CGBackup::ALIVE);
+		shooterbackup->SetName("Garlic Refiller");
+		shooterbackup->SetRole("Refiller");
+		shooterbackup->SetHealth(2);
+		shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
+		shooterbackup->scale.Set(6, 6, 1);
+
+		switch (shooterbackup->GetState())
 		{
-			shooterbackup = new GameObject(GameObject::GO_BSHOOTER);
-			shooterbackup->type = GameObject::GO_BSHOOTER;
-			shooterbackup->SetState(CGBackup::ALIVE);
-			shooterbackup->SetName("Garlic Refiller");
-			shooterbackup->SetRole("Refiller");
-			shooterbackup->SetHealth(2);
-			shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
-			shooterbackup->scale.Set(6, 6, 1);
-
-			switch (shooterbackup->GetState())
+		case CGBackup::IDLE:
+		{
+			if (mb.GetMessage() == "I need more garlics")
 			{
-			case CGBackup::IDLE:
+				shooterbackup->SetState(CGBackup::REFILL);
+				bShooter.AmmoCount = 0;
+			}
+			else
 			{
-				if (mb.GetMessage() == "I need more garlics")
+				if (bShooter.AmmoCount == 0)
 				{
-					shooterbackup->SetState(CGBackup::REFILL);
-					bShooter.AmmoCount = 0;
+					mb.SetMessage("I need restock");
+					mb.SetFromLabel("Refiller");
+					mb.SetToLabel("Supplier");
 				}
-				else
-				{
-					if (bShooter.AmmoCount == 0)
-					{
-						mb.SetMessage("I need restock");
-						mb.SetFromLabel("Refiller");
-						mb.SetToLabel("Supplier");
-					}
-				}
-				break;
 			}
-			}
-
-			limitB++;
+			break;
 		}
+		}
+		limitB++;
+	}
+
+
+	static float timeget;
+	static float timeLimit = 2.f;
+	timeget += dt;
+
+	if (timeget > timeLimit)
+	{
+		timeget = timeLimit;
+	}
+
+	if (timeget >= timeLimit && Garlics.garlicLeft > 0)
+	{
+		garlic = FetchGO();
+		garlic->type = GameObject::GO_BULLET;
+		garlic->SetState(CGarlic::INACTIVE);
+		garlic->SetName("Garlic");
+		garlic->SetColor(1.0f, 1.0f, 1.0f);
+		garlic->scale.Set(7, 7, 1);
+		garlic->pos.Set(shooter->pos.x, shooter->pos.y, -1);
+		if (Garlics.garlicLeft > 0)
+		{
+			garlic->vel.Set(shooter->pos.x, 0, 0);
+			garlic->vel.Normalize() *= BULLET_SPEED;
+		}
+		garlic->active = true;
+
+		garlic2 = FetchGO();
+		garlic2->type = GameObject::GO_BULLET;
+		garlic2->SetState(CGarlic::INACTIVE);
+		garlic2->SetName("Garlic");
+		garlic2->SetColor(1.0f, 1.0f, 1.0f);
+		garlic2->scale.Set(7, 7, 1);
+		garlic2->pos.Set(shooter2->pos.x, shooter2->pos.y, -1);
+		if (Garlics.garlicLeft > 0)
+		{
+			garlic2->vel.Set(shooter->pos.x, 0, 0);
+			garlic2->vel.Normalize() *= BULLET_SPEED;
+		}
+		garlic2->active = true;
+
+		garlic3 = FetchGO();
+		garlic3->type = GameObject::GO_BULLET;
+		garlic3->SetState(CGarlic::INACTIVE);
+		garlic3->SetName("Garlic");
+		garlic3->SetColor(1.0f, 1.0f, 1.0f);
+		garlic3->scale.Set(7, 7, 1);
+		garlic3->pos.Set(shooter3->pos.x, shooter3->pos.y, -1);
+		if (Garlics.garlicLeft > 0)
+		{
+			garlic3->vel.Set(shooter->pos.x, 0, 0);
+			garlic3->vel.Normalize() *= BULLET_SPEED;
+		}
+		garlic3->active = true;
+
+
+		// For shooter 1 ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~
+		switch (garlic->GetState())
+		{
+		case CGarlic::INACTIVE:
+		{
+			if (Garlics.garlicLeft > 0)
+			{
+				if (shooter->GetState() != CGShooter::DIED || shooterbackup->GetState() == CGBackup::REPLACING)
+				{
+					garlic->SetState(CGarlic::FIRED);
+				}
+			}
+			break;
+		}
+		case CGarlic::FIRED:
+		{
+			Garlics.garlicLeft--;
+			garlic->SetState(CGarlic::MOVING);
+			break;
+		}
+		case CGarlic::HIT:
+		{
+			garlic->active = false;
+			garlic->SetState(CGarlic::INACTIVE);
+			vampire->SetState(CVampire::HIT);
+			break;
+		}
+		case CGarlic::MOVING:
+		{
+			if ((vampire->pos - garlic->pos).Length() < (vampire->scale.x + garlic->scale.x))
+			{
+				garlic->SetState(CGarlic::HIT);
+			}
+			break;
+		}
+		}
+
+		// For shooter 2 ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~
+		switch (garlic2->GetState())
+		{
+		case CGarlic::INACTIVE:
+		{
+			if (Garlics.garlicLeft > 0)
+			{
+				if (shooter2->GetState() != CGShooter::DIED || shooterbackup->GetState() == CGBackup::REPLACING)
+				{
+					garlic2->SetState(CGarlic::FIRED);
+				}
+			}
+			break;
+		}
+		case CGarlic::FIRED:
+		{
+			Garlics.garlicLeft--;
+			garlic2->SetState(CGarlic::MOVING);
+			break;
+		}
+		case CGarlic::HIT:
+		{
+			garlic2->active = false;
+			garlic2->SetState(CGarlic::INACTIVE);
+			vampire->SetState(CVampire::HIT);
+			break;
+		}
+		case CGarlic::MOVING:
+		{
+			if ((vampire->pos - garlic2->pos).Length() < (vampire->scale.x + garlic2->scale.x))
+			{
+				garlic2->SetState(CGarlic::HIT);
+			}
+			break;
+		}
+		}
+
+		// For shooter 3 ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~**~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~
+		switch (garlic3->GetState())
+		{
+		case CGarlic::INACTIVE:
+		{
+			if (Garlics.garlicLeft > 0)
+			{
+				if (shooter3->GetState() != CGShooter::DIED || shooterbackup->GetState() == CGBackup::REPLACING)
+				{
+					garlic3->SetState(CGarlic::FIRED);
+				}
+			}
+			break;
+		}
+
+		case CGarlic::FIRED:
+		{
+			Garlics.garlicLeft--;
+			garlic3->SetState(CGarlic::MOVING);
+			break;
+		}
+		case CGarlic::HIT:
+		{
+			garlic3->active = false;
+			garlic3->SetState(CGarlic::INACTIVE);
+			vampire->SetState(CVampire::HIT);
+			break;
+		}
+		case CGarlic::MOVING:
+		{
+			if ((vampire->pos - garlic3->pos).Length() < (vampire->scale.x + garlic3->scale.x))
+			{
+				garlic3->SetState(CGarlic::HIT);
+			}
+			break;
+		}
+		}
+
+		timeget = 0;
+	}
+
+
+	for (std::vector<GameObject *>::iterator itr = m_goList.begin(); itr != m_goList.end(); itr++)
+	{
+		GameObject *go = (GameObject *)*itr;
+		go->pos += go->vel * dt;
 	}
 
 	dt *= m_speed;
+
 	m_force.SetZero();
 }
 void SceneAI::RenderGO(GameObject *go)
@@ -421,7 +829,7 @@ void SceneAI::RenderGO(GameObject *go)
 	}
 	case GameObject::GO_SHOOTER:
 	{
-		if (shooter->GetState() != CGShooter::INJURED) // as long as the state the shooter is not injured
+		if (shooter->GetState() != CGShooter::INJURED || shooter2->GetState() != CGShooter::INJURED || shooter3->GetState() != CGShooter::INJURED) // as long as the state the shooter is not injured
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
@@ -430,7 +838,7 @@ void SceneAI::RenderGO(GameObject *go)
 			modelStack.PopMatrix();
 		}
 
-		else if (shooter->GetState() == CGShooter::INJURED) // if the shooter gets injured
+		else if (shooter->GetState() == CGShooter::INJURED || shooter2->GetState() == CGShooter::INJURED || shooter3->GetState() == CGShooter::INJURED) // if the shooter gets injured
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
@@ -513,10 +921,6 @@ void SceneAI::Render()
 			RenderGO(go);
 		}
 	}
-
-
-	//Render cashier
-	//RenderGO(m_cashier);
 
 	//chip
 	//std::ostringstream N_Chip;

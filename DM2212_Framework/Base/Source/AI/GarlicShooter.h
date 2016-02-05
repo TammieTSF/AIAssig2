@@ -7,9 +7,8 @@ public:
 	enum SHOOTER
 	{
 		ALIVE,
-		SHOOT,
-		RETURN,
 		INJURED,
+		RETURN,
 		DIED,
 	};
 

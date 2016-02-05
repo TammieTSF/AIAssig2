@@ -26,6 +26,7 @@ using namespace std;
 
 class SceneAI : public SceneBase
 {
+	static const int BULLET_SPEED = 30;
 public:
 	SceneAI();
 	~SceneAI();
@@ -76,10 +77,14 @@ protected:
 
 	GameObject
 		*garlic,
+		*garlic2,
+		*garlic3,
 		*grocer,
 		*medic,
 		*medicassistant,
 		*shooter,
+		*shooter2,
+		*shooter3,
 		*shooterbackup,
 		*vampire;
 

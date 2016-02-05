@@ -8,14 +8,9 @@ public:
 	enum VAMPIRE
 	{
 		MOVE,
-		STAY,
-		CHANGELANE,
 		DESTROY,
+		HIT,
 		DIE,
 	};
-
-	bool Lane1;
-	bool Lane2;
-	bool Lane3;
 };
 

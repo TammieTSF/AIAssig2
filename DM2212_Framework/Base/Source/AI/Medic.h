@@ -8,9 +8,6 @@ public:
 	{
 		IDLE,
 		HEAL,
-
-		HEALING,
-		HEALED,
 	};
 
 	float medicPos, assistantPos, safehousePos, safehouseRadius;
