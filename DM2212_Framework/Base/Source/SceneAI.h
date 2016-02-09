@@ -42,12 +42,10 @@ public:
 
 	CVampire* FetchVampires();
 
-	CAssistant aMedic;	// Medic Assistant
 	CGarlic Garlics;	// Garlic Bullets
 	CGBackup bShooter;	// Garlic Backup
 	CGShooter Shooter;	// Main Shooter
 	CGrocer Grocer;		// Grocer	
-	CMedic Medic;		// Main Medic
 	CMessageBoard mb;	// MessageBoard
 	CVampire Vampire;	// Vampire
 
@@ -59,6 +57,9 @@ public:
 	float GetDistance(float x1, float y1, float x2, float y2);
 
 	float RandomLane();
+
+	//FSM
+	void RunFSM();
 
 protected:
 
@@ -80,24 +81,19 @@ protected:
 		*garlic2,
 		*garlic3,
 		*grocer,
-		*medic,
-		*medicassistant,
+		*medic_obj,
+		*amedic_obj,
 		*shooter,
 		*shooter2,
 		*shooter3,
 		*shooterbackup,
-		*vampire;
+		*vampire_obj;
 
 	Vector3 m_force;
 
 	int m_objectCount;
 	int objectcount;
 	int RandomIndex;
-
-	//vamp variables
-	int vampCount;
-	float vampLimiter;
-	float translatevamp;
 
 	//Probability
 	//float Gprobability; // Gender probability

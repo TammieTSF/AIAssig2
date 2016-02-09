@@ -49,7 +49,9 @@ public:
 		GEO_BALL,
 		GEO_CUBE,
 
+		
 		GEO_BG, 
+		GEO_TEXTBG, //black quad for states printout
 
 		GEO_SHOOTER,		// Garlic Shooter
 		GEO_SSHOOTER,		// Injured Shooter
@@ -58,6 +60,7 @@ public:
 		GEO_AMEDIC,			// Assistant Medic
 		GEO_VAMPIRE,		// Vampire
 		GEO_BULLET,			// Bullet
+		GEO_SUPPLYBOX,		//supply box
 		GEO_SUPPLIER,		// Supplier
 		GEO_RSUPPLIER,		// Supplier Escape
 
