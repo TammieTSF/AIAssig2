@@ -1,9 +1,9 @@
-﻿Build started 10/2/2016 12:09:05 PM.
-     1>Project "C:\Users\vincent's\Desktop\AIAssig2\DM2212_Framework\Common\Common.vcxproj" on node 2 (Build target(s)).
+﻿Build started 2/10/2016 1:21:14 PM.
+     1>Project "C:\Users\Tammie\Desktop\AIAssig2\DM2212_Framework\Common\Common.vcxproj" on node 2 (Build target(s)).
      1>Lib:
-         Common.vcxproj -> C:\Users\vincent's\Desktop\AIAssig2\DM2212_Framework\Debug\Common.lib
-     1>Done Building Project "C:\Users\vincent's\Desktop\AIAssig2\DM2212_Framework\Common\Common.vcxproj" (Build target(s)).
+         Common.vcxproj -> C:\Users\Tammie\Desktop\AIAssig2\DM2212_Framework\Debug\Common.lib
+     1>Done Building Project "C:\Users\Tammie\Desktop\AIAssig2\DM2212_Framework\Common\Common.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.04
+Time Elapsed 00:00:00.06
