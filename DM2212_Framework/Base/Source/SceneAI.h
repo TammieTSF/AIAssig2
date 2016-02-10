@@ -93,7 +93,6 @@ protected:
 
 	int m_objectCount;
 	int objectcount;
-	int RandomIndex;
 
 	//Probability
 	//float Gprobability; // Gender probability

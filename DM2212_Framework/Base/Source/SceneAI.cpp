@@ -3,6 +3,8 @@
 #include "Application.h"
 #include <sstream>
 
+#define vampireLimit 1
+
 SceneAI::SceneAI()
 {
 }
@@ -114,14 +116,28 @@ void SceneAI::Init()
 	//Vampire
 	vampire_obj = FetchGO();
 	vampire_obj->type = GameObject::GO_VAMPIRE;
-	vampire_obj->SetState(CVampire::STAY);
+	vampire_obj->SetState(CVampire::MOVE);
 	vampire_obj->scale.Set(13, 13, 1);
-	vampire_obj->pos.Set(200, 10, 0);
+	vampire_obj->pos.Set(200, RandomLane(), 0);
 	vampire_obj->SetHealth(3);
 	vampire_obj->SetName("Vampire");
 	//vampire_obj->SetRole(""); Vampire don't need a role
 }
 
+float SceneAI::RandomLane()
+{
+	int rand = RandomInteger(1,3);
+
+	switch (rand)
+	{
+	case 1:
+		return 10.f;
+	case 2:
+		return 30.f;
+	case 3:
+		return 50.f;
+	}
+}
 GameObject* SceneAI::FetchGO()
 {
 	//Fetch game objects
@@ -149,7 +165,56 @@ GameObject* SceneAI::FetchGO()
 
 void SceneAI::RunFSM()
 {
+	Vector3 direction, sPos;
 
+	//Medic FSM
+	switch (medic_obj->GetState())
+	{
+	case CMedic::HEAL:
+		if (mb.GetMessage() == "HEAL")
+		{
+			medic_obj->SetState(CMedic::HEAL);
+			medic_obj->SetRole("Healer");
+			
+		}
+		break;
+	case CMedic::HEALING:
+		break;
+	case CMedic::HEALED:
+		break;
+	}
+
+	//Assistant medic FSM
+	switch (amedic_obj->GetState())
+	{
+	case CAssistant::HEAL:
+		break;
+	case CAssistant::HEALING:
+		break;
+	case CAssistant::HEALED:
+		break;
+	case CAssistant::HELP:
+		break;
+	case CAssistant::HELPING:
+		break;
+	case CAssistant::HELPED:
+		break;
+	}
+
+	//Vampire FSM    <------vampire have no role change, keep for reference
+	/*switch (vampire_obj->GetState())
+	{
+	case CVampire::STAY:
+		break;
+	case CVampire::MOVE: 
+		break;
+	case CVampire::DESTROY:
+		break;
+	case CVampire::HIT:
+		break;
+	case CVampire::DIE:
+		break;
+	}*/
 }
 
 void SceneAI::Update(double dt)
@@ -160,8 +225,31 @@ void SceneAI::Update(double dt)
 	float distance;
 	Vector3 direction, sPos;
 
-	static float limita = 0;
+	//Spawn vampires
+	static int vampCount = 0;
 
+	/*for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	{
+		GameObject *go = (GameObject *)*it;
+		if (vampCount < 2)
+		{
+		if (go->type == GameObject::GO_VAMPIRE)
+		{
+
+			vampire_obj = FetchGO();
+			vampire_obj->type = GameObject::GO_VAMPIRE;
+			vampire_obj->SetState(CVampire::MOVE);
+			vampire_obj->scale.Set(13, 13, 1);
+			vampire_obj->pos.Set(200, RandomLane(), 0);
+			vampire_obj->SetHealth(3);
+			vampire_obj->SetName("Vampire");
+			m_goList.push_back(vampire_obj);
+		}
+		vampCount++;
+	}
+	}*/
+
+	static float limita = 0;
 	//shooter states
 	if (GameObject::GO_SHOOTER)
 	{
@@ -509,9 +597,4 @@ void SceneAI::Exit()
 		delete go;
 		m_goList.pop_back();
 	}
-	/*if (m_cashier)
-	{
-	delete m_cashier;
-	m_cashier = NULL;
-	}*/
 }

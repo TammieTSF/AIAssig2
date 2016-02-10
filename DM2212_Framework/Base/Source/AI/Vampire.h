@@ -7,6 +7,7 @@ class CVampire : public GameObject
 public:
 	enum VAMPIRE
 	{
+		STAY,
 		MOVE,
 		DESTROY,
 		HIT,
