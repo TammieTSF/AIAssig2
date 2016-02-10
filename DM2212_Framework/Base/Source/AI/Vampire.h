@@ -12,6 +12,7 @@ public:
 		DESTROY,
 		HIT,
 		DIE,
+		STAY,
 	};
 };
 

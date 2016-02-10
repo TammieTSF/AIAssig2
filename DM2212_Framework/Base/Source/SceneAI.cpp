@@ -64,27 +64,52 @@ void SceneAI::Init()
 	bShooter.Lane2Empty = false;
 	bShooter.Lane3Empty = false;
 
-	//Probabilities
-	//Gprobability = 50.0f; //gender probability
-
-	// Init Backup Shooter
-	
-
-	// Init Garlics
-	/*garlic = new GameObject(GameObject::GO_BULLET);
-	garlic->type = GameObject::GO_BULLET;
-	garlic->SetState(CGarlic::INACTIVE);
-	garlic->SetName("Bullet");
-	garlic->SetColor(1.0f, 1.0f, 1.0f);
-	garlic->scale.Set(2, 2, 1);
-	garlic->pos.Set(shooter->pos.x, shooter->pos.y, shooter->pos.z);*/
-
-
-
 	bShooter.AmmoRadius = 1.0f;
 	bShooter.AmmoLimit = 3;
 	bShooter.AmmoCount = bShooter.AmmoLimit;
 	bShooter.AmmoPos = -4.5f;
+
+	bulletleft1 = 2;
+	bulletleft2 = 2;
+	bulletleft3 = 2;
+
+	//Shooter
+	shooter = FetchGO();
+	shooter->type = GameObject::GO_SHOOTER;
+	shooter->SetState(CGShooter::ALIVE);
+	shooter->SetName("Garlic Shooter");
+	shooter->SetRole("Main");
+	shooter->SetHealth(2);
+	shooter->scale.Set(13, 13, 1);
+	shooter->pos.Set(85, 10, 1);
+
+	shooter2 = FetchGO();
+	shooter2->type = GameObject::GO_SHOOTER;
+	shooter2->SetState(CGShooter::ALIVE);
+	shooter2->SetName("Garlic Shooter");
+	shooter2->SetRole("Main");
+	shooter2->SetHealth(2);
+	shooter2->scale.Set(13, 13, 1);
+	shooter2->pos.Set(85, 30, 1);
+
+	shooter3 = FetchGO();
+	shooter3->type = GameObject::GO_SHOOTER;
+	shooter3->SetState(CGShooter::ALIVE);
+	shooter3->SetName("Garlic Shooter");
+	shooter3->SetRole("Main");
+	shooter3->SetHealth(2);
+	shooter3->scale.Set(13, 13, 1);
+	shooter3->pos.Set(85, 50, 1);
+
+	// Backup
+	shooterbackup = FetchGO();
+	shooterbackup->type = GameObject::GO_BSHOOTER;
+	shooterbackup->SetState(CGBackup::ALIVE);
+	shooterbackup->SetName("Garlic Refiller");
+	shooterbackup->SetRole("Refiller");
+	shooterbackup->SetHealth(2);
+	shooterbackup->scale.Set(13, 13, 1);
+	shooterbackup->pos.Set(55, 30, 1);
 
 	//Grocer
 	grocer = FetchGO();
@@ -219,148 +244,235 @@ void SceneAI::RunFSM()
 
 void SceneAI::Update(double dt)
 {
-
 	SceneBase::Update(dt);
 
-	float distance;
-	Vector3 direction, sPos;
+	static float timeget;
+	static float timeLimit = 2.f; // 0.1f spawns 10 bullets
+	timeget += dt;
 
-	//Spawn vampires
-	static int vampCount = 0;
-
-	/*for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	if (timeget > timeLimit)
 	{
-		GameObject *go = (GameObject *)*it;
-		if (vampCount < 2)
-		{
-		if (go->type == GameObject::GO_VAMPIRE)
-		{
-
-			vampire_obj = FetchGO();
-			vampire_obj->type = GameObject::GO_VAMPIRE;
-			vampire_obj->SetState(CVampire::MOVE);
-			vampire_obj->scale.Set(13, 13, 1);
-			vampire_obj->pos.Set(200, RandomLane(), 0);
-			vampire_obj->SetHealth(3);
-			vampire_obj->SetName("Vampire");
-			m_goList.push_back(vampire_obj);
-		}
-		vampCount++;
+		timeget = timeLimit;
 	}
-	}*/
 
-	static float limita = 0;
-	//shooter states
-	if (GameObject::GO_SHOOTER)
+	if (timeget >= timeLimit)
 	{
-		if (limita < 3)
+		if (bulletleft1 > 0)
 		{
-			shooter = FetchGO();
-			shooter->type = GameObject::GO_SHOOTER;
-			shooter->SetState(CGShooter::ALIVE);
-			shooter->SetName("Garlic Shooter");
-			shooter->SetRole("Main");
-			shooter->SetHealth(2);
-			shooter->SetColor(0.0f, 0.0f, 0.1f);
-			shooter->scale.Set(13, 13, 1);
-			shooter->pos.Set(85, 10 + limita * 20, 0);
+			garlic = FetchGO();
+			garlic->type = GameObject::GO_BULLET;
+			garlic->SetState(CGarlic::INACTIVE);
+			garlic->SetName("Garlic");
+			garlic->scale.Set(7, 7, 1);
+			garlic->pos.Set(shooter->pos.x, shooter->pos.y, 0);
+			garlic->active = true;
 
-
-			//shooter state
-			switch (shooter->GetState())
-			{
-			case CGShooter::ALIVE:
-			{
-				if (mb.GetMessage() == "Injured")
-				{
-					shooter->SetState(CGShooter::INJURED);
-					shooter->SetRole("Patient");
-
-					if (shooterbackup->GetState() != CGBackup::REPLACE) // if the backup is not already replacing someone
-					{
-						mb.SetMessage("Cover up my lane!");
-						mb.SetFromLabel("Main");
-						mb.SetToLabel("Refiller");
-
-						shooterbackup->SetRole("Backup");
-						shooterbackup->SetState(CGBackup::REPLACE);
-					}
-				}
-
-				if (Garlics.garlicLeft == 0)
-				{
-					mb.SetMessage("I need more garlics");
-					mb.SetFromLabel("Main");
-					mb.SetToLabel("Refiller");
-				}
-				break;
-			}
-
-			case CGShooter::INJURED:
-			{
-									   // move towards the medic
-
-									   // if two vampires attack them at the same time, announce as dead
-
-									   /*if (mb.GetMessage() == "Killed")
-									   {
-									   shooter->SetState(CGShooter::DIED);
-									   if(shooterbackup->GetState() != CGBackup::REPLACE)
-									   shooterbackup->SetRole("Backup");
-									   shooterbackup->SetState(CGBackup::REPLACE);
-									   }*/
-									   break;
-			}
-			case CGShooter::DIED:
-			{
-									shooter->active = false;
-
-									break;
-			}
-			}
-
-			limita++;
+			timeget = 0;
 		}
 	}
 
-	static float limitB = 0;
-	if (GameObject::GO_BSHOOTER)
-	{
-		if (limitB < 1)
-		{
-			shooterbackup = new GameObject(GameObject::GO_BSHOOTER);
-			shooterbackup->type = GameObject::GO_BSHOOTER;
-			shooterbackup->SetState(CGBackup::ALIVE);
-			shooterbackup->SetName("Garlic Refiller");
-			shooterbackup->SetRole("Refiller");
-			shooterbackup->SetHealth(2);
-			shooterbackup->SetColor(0.0f, 0.0f, 1.0f);
-			shooterbackup->scale.Set(6, 6, 1);
+	static float timeget2;
+	static float timeLimit2 = 2.f; // 0.1f spawns 10 bullets
+	timeget2 += dt;
 
-			switch (shooterbackup->GetState())
+	if (timeget2 > timeLimit2)
+	{
+		timeget2 = timeLimit2;
+	}
+
+	if (timeget2 >= timeLimit2)
+	{
+		if (bulletleft2 > 0)
+		{
+			garlic2 = FetchGO();
+			garlic2->type = GameObject::GO_BULLET;
+			garlic2->SetState(CGarlic::INACTIVE);
+			garlic2->SetName("Garlic");
+			garlic2->scale.Set(7, 7, 1);
+			garlic2->pos.Set(shooter2->pos.x, shooter2->pos.y, 0);
+			garlic2->vel.Set(shooter2->pos.x, 0, 0);
+			garlic2->vel.Normalize() *= BULLET_SPEED;
+			garlic2->active = true;
+
+			timeget2 = 0;
+		}
+	}
+
+	static float timeget3;
+	static float timeLimit3 = 2.f; // 0.1f spawns 10 bullets
+	timeget3 += dt;
+
+	if (timeget3 > timeLimit3)
+	{
+		timeget3 = timeLimit3;
+	}
+
+	if (timeget3 >= timeLimit3)
+	{
+		if (bulletleft3 > 0)
+		{
+			garlic3 = FetchGO();
+			garlic3->type = GameObject::GO_BULLET;
+			garlic3->SetState(CGarlic::INACTIVE);
+			garlic3->SetName("Garlic");
+			garlic3->scale.Set(7, 7, 1);
+			garlic3->pos.Set(shooter3->pos.x, shooter3->pos.y, 0);
+			garlic3->vel.Set(shooter3->pos.x, 0, 0);
+			garlic3->vel.Normalize() *= BULLET_SPEED;
+			garlic3->active = true;
+
+			timeget3 = 0;
+		}
+	}
+
+	for (std::vector<GameObject *>::iterator itr = m_goList.begin(); itr != m_goList.end(); itr++)
+	{
+		GameObject *go = (GameObject *)*itr;
+		CGarlic* garlics1 = dynamic_cast<CGarlic*>(go);
+		go->pos += go->vel * dt;
+
+		// Garlic 1
+		if (go->type == GameObject::GO_BULLET)
+		{
+			switch (go->GetState())
 			{
-			case CGBackup::IDLE:
+			case CGarlic::INACTIVE:
 			{
-				if (mb.GetMessage() == "I need more garlics")
+				if (bulletleft1 > 0)
 				{
-					shooterbackup->SetState(CGBackup::REFILL);
-					bShooter.AmmoCount = 0;
-				}
-				else
-				{
-					if (bShooter.AmmoCount == 0)
+					if (shooter->GetState() != CGShooter::DIED || shooterbackup->GetState() == CGBackup::REPLACING)
 					{
-						mb.SetMessage("I need restock");
-						mb.SetFromLabel("Refiller");
-						mb.SetToLabel("Supplier");
+						garlic->SetState(CGarlic::FIRED);
 					}
 				}
 				break;
 			}
+			case CGarlic::FIRED:
+			{
+				bulletleft1--;
+				garlic->SetState(CGarlic::MOVING);
+				break;
+			}
+			case CGarlic::MOVING:
+			{
+				garlic->vel.Set(shooter->pos.x, 0, 0);
+				garlic->vel.Normalize() *= BULLET_SPEED;
+
+				for (std::vector<GameObject *>::iterator it2 = m_goList.begin(); it2 != m_goList.end(); ++it2)
+				{
+					GameObject *go2 = (GameObject *)*it2;
+					if (go2->type == GameObject::GO_VAMPIRE)
+					{
+						if ((garlic->pos - vampire_obj->pos).Length() < (garlic->scale.x + vampire_obj->scale.x))
+						{
+							garlic->SetState(CGarlic::HIT);
+						}
+					}
+
+				}
+
+				break;
+			}
+			case CGarlic::HIT:
+			{
+				garlic->active = false;
+			}
 			}
 
-			limitB++;
+			// Garlic 2
+			switch (garlic2->GetState())
+			{
+			case CGarlic::INACTIVE:
+			{
+				if (bulletleft2 > 0)
+				{
+					if (shooter2->GetState() != CGShooter::DIED || shooterbackup->GetState() == CGBackup::REPLACING)
+					{
+						garlic2->SetState(CGarlic::FIRED);
+					}
+				}
+				break;
+			}
+			case CGarlic::FIRED:
+			{
+				bulletleft2--;
+				garlic2->SetState(CGarlic::MOVING);
+				break;
+			}
+			case CGarlic::MOVING:
+			{
+				garlic2->vel.Set(shooter->pos.x, 0, 0);
+				garlic2->vel.Normalize() *= BULLET_SPEED;
+
+				for (std::vector<GameObject *>::iterator it2 = m_goList.begin(); it2 != m_goList.end(); ++it2)
+				{
+					GameObject *go2 = (GameObject *)*it2;
+					if (go2->type == GameObject::GO_VAMPIRE)
+					{
+						if ((garlic2->pos - vampire_obj->pos).Length() < (garlic2->scale.x + vampire_obj->scale.x))
+						{
+							garlic2->SetState(CGarlic::HIT);
+						}
+					}
+
+				}
+
+				break;
+			}
+			case CGarlic::HIT:
+			{
+				garlic2->active = false;
+			}
+			}
+
+			// Garlic 3
+			switch (garlic3->GetState())
+			{
+			case CGarlic::INACTIVE:
+			{
+				if (bulletleft3 > 0)
+				{
+					if (shooter3->GetState() != CGShooter::DIED || shooterbackup->GetState() == CGBackup::REPLACING)
+					{
+						garlic3->SetState(CGarlic::FIRED);
+					}
+				}
+				break;
+			}
+			case CGarlic::FIRED:
+			{
+				bulletleft3--;
+				garlic3->SetState(CGarlic::MOVING);
+				break;
+			}
+			case CGarlic::MOVING:
+			{
+				garlic3->vel.Set(shooter->pos.x, 0, 0);
+				garlic3->vel.Normalize() *= BULLET_SPEED;
+
+				for (std::vector<GameObject *>::iterator it2 = m_goList.begin(); it2 != m_goList.end(); ++it2)
+				{
+					GameObject *go2 = (GameObject *)*it2;
+					if (go2->type == GameObject::GO_VAMPIRE)
+					{
+						if ((garlic3->pos - vampire_obj->pos).Length() < (garlic3->scale.x + vampire_obj->scale.x))
+						{
+							garlic3->SetState(CGarlic::HIT);
+						}
+					}
+
+				}
+
+				break;
+			}
+			case CGarlic::HIT:
+			{
+				garlic3->active = false;
+			}
+			}
+
 		}
+		
 	}
 
 
@@ -527,11 +639,15 @@ void SceneAI::Render()
 
 	//Render Main Medic Name
 	nameString = medic_obj->GetName();
-	RenderTextOnScreen(meshList[GEO_TEXT], nameString, Color(0, 0, 0), 2, medic_obj->pos.x - 22, medic_obj->pos.y - 42);
+	RenderTextOnScreen(meshList[GEO_TEXT], nameString, Color(0, 0, 0), 3, medic_obj->pos.x - 22, medic_obj->pos.y - 42);
 
 	//Render Assistant Medic Name
 	nameString = amedic_obj->GetName();
-	RenderTextOnScreen(meshList[GEO_TEXT], nameString, Color(0, 0, 0), 2, amedic_obj->pos.x - 37, amedic_obj->pos.y - 42);
+	RenderTextOnScreen(meshList[GEO_TEXT], nameString, Color(0, 0, 0), 3, amedic_obj->pos.x - 37, amedic_obj->pos.y - 42);
+
+	//Render Garlic Shooters Name
+	nameString = shooter2->GetName();
+	RenderTextOnScreen(meshList[GEO_TEXT], nameString, Color(0, 0, 0), 3, shooter2->pos.x, shooter2->pos.y);
 
 	//universal string for state
 	std::string stateString;
@@ -552,6 +668,8 @@ void SceneAI::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], stateString, Color(1, 1, 1), 1.5, 57, 57);
 	stateString = "M Med Role: " + medic_obj->GetRole();
 	RenderTextOnScreen(meshList[GEO_TEXT], stateString, Color(1, 1, 1), 1.5, 57, 55);
+
+
 
 	//Render the Assistant medic state and role
 	stateString = "A Med State: ";
@@ -576,6 +694,24 @@ void SceneAI::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], stateString, Color(1, 1, 1), 1.5, 57, 51);
 	stateString = "A Med Role: " + amedic_obj->GetRole();
 	RenderTextOnScreen(meshList[GEO_TEXT], stateString, Color(1, 1, 1), 1.5, 57, 49);
+
+	// Garlic
+	stateString = "Shooter One State: ";
+
+	switch (shooter->GetState())
+	{
+	case CGShooter::ALIVE: stateString += "ALIVE";
+		break;
+	case CGShooter::INJURED: stateString += "INJURED";
+		break;
+	case CGShooter::RETURN: stateString += "RETURN";
+		break;
+	case CGShooter::DIED: stateString += "DIED";
+		break;
+	}
+	RenderTextOnScreen(meshList[GEO_TEXT], stateString, Color(1, 1, 1), 1.5, 57, 45);
+	stateString = "Shooter One Role: " + shooter->GetRole();
+	RenderTextOnScreen(meshList[GEO_TEXT], stateString, Color(1, 1, 1), 1.5, 57, 43);
 
 	//Render the message Board
 	stateString = "Message Board: ";

@@ -93,6 +93,13 @@ protected:
 
 	int m_objectCount;
 	int objectcount;
+<<<<<<< f45ad0b46faebbcdfadce0ab9fad98e23e3fe5ef
+=======
+	int RandomIndex;
+	int bulletleft1;
+	int bulletleft2;
+	int bulletleft3;
+>>>>>>> 2e2fffc448ab377c72440f42075e8f5125d07f0e
 
 	//Probability
 	//float Gprobability; // Gender probability
